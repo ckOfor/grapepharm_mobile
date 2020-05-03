@@ -37,6 +37,7 @@ target 'grapepharm' do
   pod 'Folly', :podspec => "#{rnPrefix}/third-party-podspecs/Folly.podspec"
 
   # Other native modules
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
   # Automatically detect installed unimodules
   use_unimodules!

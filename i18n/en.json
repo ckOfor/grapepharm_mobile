@@ -1,5 +1,13 @@
 {
   "common": {
     "appName": "NewJerusalemClothing"
+  },
+  "intro": {
+    "screenOneHeader": "Individual",
+    "screenOneDescription": "Get your drugs delivered to you",
+    "screenTwoDescription": "Prescribe directly to pharmacies",
+    "screenThreeDescription": "Process all orders online",
+    "screenOneButtonText": "Next",
+    "screenThreeButtonText": "Get Started"
   }
 }

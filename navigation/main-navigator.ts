@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "react-navigation";
 import { DEFAULT_BOTTOM_NAVIGATION } from "./navigation-config";
-import { LandingScreen } from "../screens/landing-screen/landing-screen";
+import { LandingScreen } from "../screens/landing-screen";
 
 export const MainNavigator = createBottomTabNavigator({
   landing: {

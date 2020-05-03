@@ -15,13 +15,18 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7B0C5784998A29E517983E0C /* libPods-grapepharm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2502ACF51380E8237829647D /* libPods-grapepharm.a */; };
+		F7DBA220245E4BCD00035371 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */; };
+		F7DBA221245E4BCD00035371 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */; };
+		F7DBA222245E4BCD00035371 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */; };
+		F7DBA223245E4BCD00035371 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21E245E4BCD00035371 /* Poppins-SemiBold.ttf */; };
+		F7DBA224245E4BCD00035371 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21F245E4BCD00035371 /* Poppins-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		056F63395CAC2B8C2DC048FE /* Pods-grapepharm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-grapepharm.debug.xcconfig"; path = "Target Support Files/Pods-grapepharm/Pods-grapepharm.debug.xcconfig"; sourceTree = "<group>"; };
-		07287ACC2432831900C893F0 /* app.manifest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = app.manifest; path = "grapepharm/Supporting/app.manifest"; sourceTree = "<group>"; };
-		07287ACD2432831900C893F0 /* app.bundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = app.bundle; path = "grapepharm/Supporting/app.bundle"; sourceTree = "<group>"; };
+		07287ACC2432831900C893F0 /* app.manifest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = app.manifest; path = grapepharm/Supporting/app.manifest; sourceTree = "<group>"; };
+		07287ACD2432831900C893F0 /* app.bundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = app.bundle; path = grapepharm/Supporting/app.bundle; sourceTree = "<group>"; };
 		0731D3BB24204D9B009CAE85 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Expo.plist; path = grapepharm/Supporting/Expo.plist; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* grapepharm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = grapepharm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = grapepharm/AppDelegate.h; sourceTree = "<group>"; };
@@ -35,6 +40,11 @@
 		E40B1F720DE0D29BF6B90074 /* Pods-grapepharm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-grapepharm.release.xcconfig"; path = "Target Support Files/Pods-grapepharm/Pods-grapepharm.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Light.ttf"; path = "../assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
+		F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
+		F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
+		F7DBA21E245E4BCD00035371 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
+		F7DBA21F245E4BCD00035371 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Bold.ttf"; path = "../assets/fonts/Poppins-Bold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +106,11 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				F7DBA21F245E4BCD00035371 /* Poppins-Bold.ttf */,
+				F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */,
+				F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */,
+				F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */,
+				F7DBA21E245E4BCD00035371 /* Poppins-SemiBold.ttf */,
 				13B07FAE1A68108700A75B9A /* grapepharm */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -146,6 +161,11 @@
 			attributes = {
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 9LTMQ2LQXZ;
+					};
+				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "grapepharm" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -171,6 +191,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7DBA220245E4BCD00035371 /* Poppins-Light.ttf in Resources */,
+				F7DBA221245E4BCD00035371 /* Poppins-Regular.ttf in Resources */,
+				F7DBA222245E4BCD00035371 /* Poppins-Medium.ttf in Resources */,
+				F7DBA223245E4BCD00035371 /* Poppins-SemiBold.ttf in Resources */,
+				F7DBA224245E4BCD00035371 /* Poppins-Bold.ttf in Resources */,
 				074F4BDE2432834300BDB9FE /* app.bundle in Resources */,
 				074F4BDF2432834300BDB9FE /* app.manifest in Resources */,
 				0731D3BE24204D9B009CAE85 /* Expo.plist in Resources */,
@@ -271,6 +296,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				INFOPLIST_FILE = grapepharm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -278,7 +304,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grapepharm;
 				PRODUCT_NAME = grapepharm;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -290,6 +316,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				INFOPLIST_FILE = grapepharm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -297,7 +324,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.grapepharm;
 				PRODUCT_NAME = grapepharm;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

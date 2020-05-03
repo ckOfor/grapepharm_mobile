@@ -34,8 +34,7 @@ interface ContactUsScreenProps extends NavigationScreenProps {}
 type Props = DispatchProps & StateProps & ContactUsScreenProps
 
 const ROOT: ViewStyle = {
-	height: Layout.window.height,
-	backgroundColor: 'blue'
+	height: Layout.window.height
 };
 
 class Landing extends React.Component<NavigationScreenProps & Props> {
@@ -48,8 +47,8 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 			>
 				{
 					Platform.OS === "ios"
-						? <StatusBar barStyle="light-content" />
-						: <StatusBar barStyle={"light-content"} translucent backgroundColor={colors.purple} />
+						? <StatusBar barStyle="dark-content" />
+						: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.purple} />
 				}
 			</View>
 		)

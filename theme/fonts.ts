@@ -3,5 +3,7 @@ export const fonts = {
   gibsonRegular: "Gibson-Regular",
   latoRegular: "Lato-Regular",
   rockwell: "Rockwell",
+  PoppinsSemiBold: "Poppins-SemiBold",
+  PoppinsLight: "Poppins-Light",
 }
 export type FontKeys = keyof typeof fonts

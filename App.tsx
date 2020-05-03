@@ -1,18 +1,29 @@
+// react
 import React, { useEffect } from "react"
-import { Platform, StatusBar, Text, View } from "react-native"
+
+// third-parties
+import {
+  Platform, StatusBar, Text, View, Image, ImageStyle
+} from "react-native"
 import { Provider } from "react-redux"
 import { PersistGate } from "redux-persist/integration/react"
 import { NavigationScreenProps } from "react-navigation"
 import * as Font from "expo-font"
 import { Asset } from 'expo-asset'
+import * as Animatable from 'react-native-animatable';
+import SplashScreen from 'react-native-splash-screen'
+import { Root } from "native-base";
 
+// redux
 import DebugConfig from "./config/debug-config"
 import { AppWithNavigationState } from "./navigation/redux-navigation"
 import configureStore from "./redux/create-store"
 import { startup, checkLocationPermissionAsync } from "./redux/startup"
-import { Root } from "native-base";
-// import SplashScreen from 'react-native-splash-screen'
+
+// styles
 import {colors} from "./theme";
+import {Layout} from "./constants";
+import { images } from "./theme";
 
 // useScreens()
 
@@ -20,6 +31,8 @@ export const { store, persistor } = configureStore();
 
 type State = {
   isLoadingComplete: boolean
+  onAnimationEnd: boolean
+  hideSPlash: boolean
 }
 
 interface DispatchProps {
@@ -32,30 +45,85 @@ interface MyProps extends NavigationScreenProps {
 
 type Props = MyProps & DispatchProps
 
+const APP_LOGO: ImageStyle = {
+  // height: '100%',
+  // width: '40%',
+};
+
+
 class App extends React.Component<Props, State> {
   state = {
-    isLoadingComplete: false
+    isLoadingComplete: false,
+    onAnimationEnd: false,
+    hideSPlash: false
   };
   
   componentDidMount() {
     this.loadResourcesAsync();
-    // setTimeout(() => SplashScreen.hide() , 2000);
+    setTimeout(() => SplashScreen.hide() , 2000);
     store.dispatch(startup());
     //@ts-ignore (let's discuss adding a permission screen before authLanding page.)
     store.dispatch(checkLocationPermissionAsync())
   }
   
   render() {
+    const { onAnimationEnd, hideSPlash } = this.state
+    // if (!this.state.isLoadingComplete) return null;
     if (!this.state.isLoadingComplete) return null;
+    
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor} loading={<Text> Loading... </Text>}>
           <View style={{ flex: 1 }}>
             {
               Platform.OS === "ios"
-                ? <StatusBar barStyle="light-content" />
-                : <StatusBar barStyle={"light-content"} translucent backgroundColor={colors.purple} />
+                ?
+                <StatusBar
+                  barStyle="dark-content"
+                />
+                :
+                <StatusBar
+                  barStyle={"dark-content"}
+                  // translucent
+                  // backgroundColor={colors.purple}
+                />
             }
+            
+            {/*{*/}
+            {/*  !hideSPlash && (<Animatable.View*/}
+            {/*    animation={'zoomInLeft'}*/}
+            {/*    delay={2000}*/}
+            {/*    duration={5000}*/}
+            {/*    style={{*/}
+            {/*      backgroundColor: colors.white,*/}
+            {/*      width: Layout.window.width,*/}
+            {/*      height: Layout.window.height,*/}
+            {/*      alignItems: 'center',*/}
+            {/*      justifyContent: 'center',*/}
+            {/*    }}*/}
+            {/*    useNativeDriver*/}
+            {/*    onAnimationEnd={() => this.setState({*/}
+            {/*      onAnimationEnd: true,*/}
+            {/*      hideSPlash: true,*/}
+            {/*    })}*/}
+            {/*  >*/}
+            {/*    <Image*/}
+            {/*      style={APP_LOGO}*/}
+            {/*      source={images.appLogo}*/}
+            {/*      resizeMethod={'auto'}*/}
+            {/*      resizeMode='cover'*/}
+            {/*    />*/}
+            {/*  </Animatable.View>)*/}
+            {/*}*/}
+            
+            
+            {/*{*/}
+            {/*  onAnimationEnd && (*/}
+            {/*    <Root>*/}
+            {/*      <AppWithNavigationState />*/}
+            {/*    </Root>*/}
+            {/*  )*/}
+            {/*}*/}
             <Root>
               <AppWithNavigationState />
             </Root>
@@ -68,7 +136,9 @@ class App extends React.Component<Props, State> {
   loadResourcesAsync = async () => {
     await Promise.all([
       Asset.loadAsync([
-        // require('./assets/land-bk.png'),
+        require('./assets/individualIcon.png'),
+        require('./assets/doctorsIcon.png'),
+        require('./assets/companyIcon.png'),
         // require('./assets/app-logo.png'),
         // require('./assets/google-logo.png'),
         // require('./assets/facebook-logo.png'),
@@ -80,6 +150,7 @@ class App extends React.Component<Props, State> {
         // "Roboto": require('native-base/Fonts/Roboto.ttf'),
         // "Roboto_medium": require('native-base/Fonts/Roboto_medium.ttf'),
         "Rockwell": require('./assets/fonts/rockwell.ttf'),
+        "Poppins-Light": require('./assets/fonts/Poppins-Light.ttf'),
       }),
     ]);
     

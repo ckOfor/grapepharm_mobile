@@ -47,6 +47,7 @@ export const colors = {
   emperor: "#534e53",
   shark: "#2c2e30",
   black: "#000000",
+  companyGreen: "#00C4D6",
   submarine: "#b8bfc6",
   rockBlue: "#99a7cc",
   regentGray: "#7c86a2",
