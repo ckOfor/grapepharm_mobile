@@ -22,6 +22,7 @@ import {Layout} from "../../constants";
 import {colors, fonts, images} from "../../theme";
 import {translate} from "../../i18n";
 import {Button} from "../../components/button";
+import GestureRecognizer, {swipeDirections} from "react-native-swipe-gestures";
 
 interface DispatchProps {
 
@@ -79,52 +80,87 @@ const NEXT_BUTTON_TEXT: TextStyle = {
 
 class IntroTwo extends React.Component<NavigationScreenProps & Props> {
 	
+	onSwipe = (gestureName: any, gestureState: any) => {
+		const { navigation } = this.props;
+		
+		const { SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
+		this.setState({gestureName: gestureName});
+		switch (gestureName) {
+			case SWIPE_LEFT:
+				navigation.navigate('introThree');
+				break;
+			case SWIPE_RIGHT:
+				navigation.navigate('introOne');
+				break;
+		}
+	};
+	
+	onSwipeLeft() {
+		this.props.navigation.navigate('introThree')
+	}
+	
+	onSwipeRight() {
+		this.props.navigation.navigate('introOne')
+	}
+	
 	public render(): React.ReactNode {
 		
 		const { navigation } = this.props;
 		
+		const config = {
+			velocityThreshold: 0.3,
+			directionalOffsetThreshold: 80
+		};
+		
 		return (
-			<View
-				style={ROOT}
+			<GestureRecognizer
+				onSwipe={(direction, state) => this.onSwipe(direction, state)}
+				config={config}
+				onSwipeLeft={(state) => this.onSwipeLeft()}
+				onSwipeRight={(state) => this.onSwipeRight()}
 			>
-				{
-					Platform.OS === "ios"
-						? <StatusBar barStyle="dark-content" />
-						: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.purple} />
-				}
-				
-				<Image
-					source={images.doctorsIcon}
-					resizeMethod={'auto'}
-					resizeMode='cover'
-				/>
-				
-				<Text
-					style={HEADER_TEXT}
+				<View
+					style={ROOT}
 				>
-					{translate(`intro.screenOneHeader`)}
-				</Text>
-				
-				<Text
-					style={DESCRIPTION}
-				>
-					{translate(`intro.screenTwoDescription`)}
-				</Text>
-				
-				<Image
-					style={DOT_ICON}
-					source={images.dotTwoIcon}
-					resizeMethod={'auto'}
-					resizeMode='cover'
-				/>
-				
-				<Button
-					style={NEXT_BUTTON}
-					textStyle={NEXT_BUTTON_TEXT}
-					onPress={() => navigation.navigate('introThree')}
-					tx={`intro.screenOneButtonText`}
-				/>
-			</View>
+					{
+						Platform.OS === "ios"
+							? <StatusBar barStyle="dark-content" />
+							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.purple} />
+					}
+					
+					<Image
+						source={images.doctorsIcon}
+						resizeMethod={'auto'}
+						resizeMode='cover'
+					/>
+					
+					<Text
+						style={HEADER_TEXT}
+					>
+						{translate(`intro.screenTwoHeader`)}
+					</Text>
+					
+					<Text
+						style={DESCRIPTION}
+					>
+						{translate(`intro.screenTwoDescription`)}
+					</Text>
+					
+					<Image
+						style={DOT_ICON}
+						source={images.dotTwoIcon}
+						resizeMethod={'auto'}
+						resizeMode='cover'
+					/>
+					
+					<Button
+						style={NEXT_BUTTON}
+						textStyle={NEXT_BUTTON_TEXT}
+						onPress={() => navigation.navigate('introThree')}
+						tx={`intro.screenOneButtonText`}
+					/>
+				</View>
+			</GestureRecognizer>
 		)
 	}
 }

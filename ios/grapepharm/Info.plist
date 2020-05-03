@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -52,13 +52,17 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow grapepharm to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Allow grapepharm to access your device&apos;s accelerometer</string>
+	<string>Allow grapepharm to access your device's accelerometer</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Give grapepharm periences permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Give grapepharm periences permission to access your photos</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Allow grapepharm to access your reminders</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Poppins-SemiBold.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -75,9 +79,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Poppins-SemiBold.ttf</string>
-	</array>
 </dict>
 </plist>

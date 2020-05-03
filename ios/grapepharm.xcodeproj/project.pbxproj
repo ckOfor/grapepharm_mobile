@@ -294,7 +294,7 @@
 			baseConfigurationReference = 056F63395CAC2B8C2DC048FE /* Pods-grapepharm.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				INFOPLIST_FILE = grapepharm/Info.plist;
@@ -315,7 +315,7 @@
 			baseConfigurationReference = E40B1F720DE0D29BF6B90074 /* Pods-grapepharm.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				INFOPLIST_FILE = grapepharm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

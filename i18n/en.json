@@ -4,6 +4,8 @@
   },
   "intro": {
     "screenOneHeader": "Individual",
+    "screenTwoHeader": "Doctors",
+    "screenThreeHeader": "Companies",
     "screenOneDescription": "Get your drugs delivered to you",
     "screenTwoDescription": "Prescribe directly to pharmacies",
     "screenThreeDescription": "Process all orders online",
