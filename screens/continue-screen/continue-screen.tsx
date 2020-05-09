@@ -124,8 +124,8 @@ class Continue extends React.Component<NavigationScreenProps & Props> {
 					style={NEXT_BUTTON}
 					textStyle={NEXT_BUTTON_TEXT}
 					onPress={() => {
-						setAuthUserType('individual')
-						navigation.navigate('indSignUp')
+						setAuthUserType('Individual')
+						navigation.navigate('signIn')
 					}}
 					tx={`intro.screenOneHeader`}
 				/>
@@ -133,14 +133,20 @@ class Continue extends React.Component<NavigationScreenProps & Props> {
 				<Button
 					style={NEXT_BUTTON}
 					textStyle={NEXT_BUTTON_TEXT}
-					onPress={() => navigation.navigate('docSignUp')}
+					onPress={() => {
+						setAuthUserType('Doctor')
+						navigation.navigate('signIn')
+					}}
 					tx={`intro.screenTwoHeader`}
 				/>
 
 				<Button
 					style={NEXT_BUTTON}
 					textStyle={NEXT_BUTTON_TEXT}
-					onPress={() => navigation.navigate('comSignUp')}
+					onPress={() => {
+						setAuthUserType('Company')
+						navigation.navigate('signIn')
+					}}
 					tx={`intro.screenThreeHeader`}
 				/>
 

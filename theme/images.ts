@@ -9,6 +9,7 @@ export const images = {
 	continueAppLogo: require("../assets/continueAppLogo.png"),
 	continueBackgroundLogo: require("../assets/continueBackgroundLogo.png"),
 	authBackground: require("../assets/authBackground.png"),
+	fingerPrint: require("../assets/fingerPrint.png"),
 	errorIcon: require("../assets/errorIcon.png"),
 	ageCheckBoxTrue: require("../assets/ageCheckBoxTrue.png"),
 	ageCheckBoxFalse: require("../assets/ageCheckBoxFalse.png"),

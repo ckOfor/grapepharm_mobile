@@ -117,7 +117,7 @@ export type IUser = {
 }
 
 export type signUpCredentials = {
-	fullName: string
+	fullName?: string
 	companyName?: string
 	email: string
 	password: string

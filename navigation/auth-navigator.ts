@@ -3,6 +3,7 @@ import { ContinueScreen } from "../screens/continue-screen/continue-screen";
 import { IndSignUpScreen } from "../screens/ind-sign-up-screen";
 import { DocSignUpScreen } from "../screens/doc-sign-up-screen";
 import { ComSignUpScreen } from "../screens/com-sign-up-screen";
+import {SignInScreen} from "../screens/sign-in-screen";
 
 export const AuthNavigator = createStackNavigator({
 	continue: {
@@ -25,6 +26,12 @@ export const AuthNavigator = createStackNavigator({
 	},
 	comSignUp: {
 		screen: ComSignUpScreen,
+		navigationOptions: {
+			header: null
+		}
+	},
+	signIn: {
+		screen: SignInScreen,
 		navigationOptions: {
 			header: null
 		}

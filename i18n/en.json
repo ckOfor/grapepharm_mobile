@@ -2,6 +2,8 @@
   "common": {
     "appName": "GrapePharm",
     "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "forgotPassword": "Forgot Password",
     "logIn": "Log In",
     "exitingUser": "Already have an account? ",
     "change": "Change",
@@ -49,5 +51,9 @@
     "registerAs": "Register as:",
     "pharmacy": "Pharmacy",
     "manufacturer": "Manufacturer"
+  },
+  "signIn": {
+    "fingerPrint": "Or fingerprint Login",
+    "signUp": "Don't have an account? "
   }
 }

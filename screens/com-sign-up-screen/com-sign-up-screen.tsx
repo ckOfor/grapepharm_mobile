@@ -290,7 +290,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 									</Text>
 									
 									<TouchableOpacity
-										onPress={() => navigation.goBack()}
+										onPress={() => navigation.navigate('continue')}
 									>
 										<Text
 											style={CHANGE_TEXT}
@@ -477,6 +477,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 							</View>
 							
 							<TouchableOpacity
+								onPress={() => navigation.navigate('signIn')}
 								style={BOTTOM_VIEW}
 							>
 								

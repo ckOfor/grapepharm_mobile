@@ -11,6 +11,7 @@ import {
 	ImageStyle,
 	Text,
 	TextStyle,
+	Image,
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView
@@ -25,64 +26,46 @@ import * as Yup from "yup";
 
 // redux
 import { ApplicationState } from "../../redux";
-import { signUpCredentials, signUpDoctorAsync } from "../../redux/auth";
 
 // styles
 import { Layout } from "../../constants";
 import { colors, fonts, images } from "../../theme";
 import { translate } from "../../i18n";
 import { Header } from "../../components/header";
-import { TextField } from "../../components/text-field";
-import { Button } from "../../components/button";
-
-// utils
-import {folioNumberRegExp, fullNameRegExp} from "../../utils/regexes";
+import {TextField} from "../../components/text-field";
+import {Button} from "../../components/button";
+import {signUpIndividualAsync, signUpCredentials} from "../../redux/auth";
 
 interface DispatchProps {
-	signUpDoctorAsync: (values: signUpCredentials) => void
+	signUpAsync: (values: signUpCredentials) => void
 }
 
 interface StateProps {
-	authFullName: string
+	authUserType: string
 	authEmail: string
-	authFolioNumber: string
 	isLoading: boolean
 }
 
 interface MyFormValues {
-	fullName: string
 	email: string
 	password: string
-	confirmPassword: string
-	folioNumber: string
 }
 
 interface ContactUsScreenProps extends NavigationScreenProps {}
 
 type Props = DispatchProps & StateProps & ContactUsScreenProps
 
+
 const schema = Yup.object().shape({
-	fullName: Yup.string()
-		.min(4, "common.fieldTooShort")
-		.matches(fullNameRegExp, "common.fullNameError")
-		.required("common.fullNameError"),
-	folioNumber: Yup.string()
-		.min(5, "common.folioNumberTooShortError")
-		.matches(folioNumberRegExp, "common.folioNumberInvalid")
-		.required("common.folioNumberError"),
 	email: Yup.string()
 		.email("common.emailError")
 		.required("common.fieldRequired"),
 	password: Yup.string()
 		.min(6, "common.passwordError")
 		.required("common.fieldRequired"),
-	confirmPassword: Yup.string()
-		.oneOf([Yup.ref('password')], 'common.confirmPassword')
-		.required("common.fieldRequired")
 })
 
 const ROOT: ViewStyle = {
-	// height: '100%',
 	alignItems: 'center',
 };
 
@@ -105,7 +88,6 @@ const BACKGROUND_VIEW: ViewStyle = {
 
 const TOP_VIEW: ViewStyle = {
 	backgroundColor: '#FFFFFF',
-	// height: '100%',
 	width: Layout.window.width / 1.1,
 	borderRadius: 15,
 	borderWidth: 1,
@@ -145,8 +127,10 @@ const CHANGE_TEXT: TextStyle = {
 };
 
 const BOTTOM_VIEW: ViewStyle = {
-	flexDirection: 'row',
-	margin: 50
+	flexDirection: 'column',
+	justifyContent: 'space-between',
+	margin: 50,
+	height: Layout.window.height / 5
 }
 
 const BOTTOM_TEXT: TextStyle = {
@@ -160,8 +144,16 @@ const FIELD: ViewStyle = {
 	marginTop: 20
 }
 
+const FORGOT_PASSWORD: TextStyle = {
+	color: colors.companyGreenTwo,
+	fontSize: 12,
+	fontFamily: fonts.PoppinsRegular,
+	marginRight: 30,
+	alignSelf: "flex-end"
+};
+
 const BUTTON_VIEW: ViewStyle = {
-	marginBottom: 15
+	margin: 40
 }
 
 const CONTINUE_BUTTON: ViewStyle = {
@@ -184,30 +176,21 @@ const BOTTOM_TEXT_LOGIN: TextStyle = {
 	fontFamily: fonts.PoppinsMedium
 };
 
-class DocSignUp extends React.Component<NavigationScreenProps & Props> {
+class SignIn extends React.Component<NavigationScreenProps & Props> {
 	
-	fullNameInput: NativeMethodsMixinStatic | any
 	emailInput: NativeMethodsMixinStatic | any
 	passwordInput: NativeMethodsMixinStatic | any
-	confirmPasswordInput: NativeMethodsMixinStatic | any
-	folioNumberInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
 	
-	state={
-		termsAndConditions: false
-	}
-	
 	submit = (values: signUpCredentials) => {
-		this.props.signUpDoctorAsync(values)
+		// this.props.signUpAsync(values)
 	}
 	
 	public render(): React.ReactNode {
 		
 		const {
-			navigation, authFullName, authEmail, authFolioNumber, isLoading
+			navigation, authUserType, authEmail, isLoading
 		} = this.props
-		
-		const { termsAndConditions } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -253,7 +236,7 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 								<Text
 									style={HEADER_TEXT}
 								>
-									{translate(`common.signUp`)}
+									{translate(`common.logIn`)}
 								</Text>
 								
 								<View
@@ -262,11 +245,11 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 									<Text
 										style={USER_TYPE}
 									>
-										{translate(`docSignUp.userText`)}
+										{authUserType}
 									</Text>
 									
 									<TouchableOpacity
-										onPress={() => navigation.navigate('continue')}
+										onPress={() => navigation.goBack()}
 									>
 										<Text
 											style={CHANGE_TEXT}
@@ -278,11 +261,8 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 								
 								<Formik
 									initialValues={{
-										fullName: authFullName,
 										email: authEmail,
 										password: "",
-										confirmPassword: "",
-										folioNumber: authFolioNumber,
 									}}
 									validationSchema={schema}
 									onSubmit={this.submit}
@@ -304,22 +284,6 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 											<View
 												style={FIELD}
 											>
-												<TextField
-													name="fullName"
-													keyboardType="default"
-													placeholderTx="common.fullNamePlaceHolder"
-													value={values.fullName}
-													onChangeText={handleChange("fullName")}
-													onBlur={handleBlur("fullName")}
-													autoCapitalize="words"
-													returnKeyType="next"
-													isInvalid={!isValid}
-													fieldError={errors.fullName}
-													onSubmitEditing={() => this.emailInput.focus()}
-													forwardedRef={i => {
-														this.fullNameInput = i
-													}}
-												/>
 												
 												<TextField
 													name="email"
@@ -355,88 +319,98 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 													blurOnSubmit={false}
 													onSubmitEditing={() => this.confirmPasswordInput.focus()}
 												/>
-												
-												<TextField
-													name="confirmPassword"
-													secureTextEntry
-													placeholderTx="common.confirmPasswordPlaceHolder"
-													value={values.confirmPassword}
-													onChangeText={handleChange("confirmPassword")}
-													onBlur={handleBlur("confirmPassword")}
-													autoCapitalize="none"
-													returnKeyType="done"
-													isInvalid={!isValid}
-													fieldError={errors.confirmPassword}
-													forwardedRef={i => {
-														this.confirmPasswordInput = i
-													}}
-													blurOnSubmit={false}
-													onSubmitEditing={() => this.folioNumberInput.focus()}
-												/>
-												
-												<TextField
-													name="folioNumber"
-													keyboardType="default"
-													placeholderTx="common.folioNumberPlaceHolder"
-													value={values.folioNumber}
-													onChangeText={handleChange("folioNumber")}
-													onBlur={handleBlur("folioNumber")}
-													autoCapitalize="none"
-													returnKeyType="next"
-													isInvalid={!isValid}
-													fieldError={errors.folioNumber}
-													// onSubmitEditing={() => this.emailInput.focus()}
-													forwardedRef={i => {
-														this.folioNumberInput = i
-													}}
-													onSubmitEditing={()=> {
-														Keyboard.dismiss()
-													}}
-												/>
-												
-												<View
-													style={BUTTON_VIEW}
-												>
-													<Button
-														style={CONTINUE_BUTTON}
-														textStyle={CONTINUE_BUTTON_TEXT}
-														disabled={isLoading}
-														onPress={() => this.formik.handleSubmit()}
-													>
-														{
-															isLoading
-																? <ActivityIndicator size="small" color={colors.white} />
-																: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-														}
-													</Button>
-												</View>
+											
+											
 											</View>
 										</View>
 									)}
-									
 								</Formik>
+								
+								<TouchableOpacity
+									onPress={() => console.tron.log('Forget!')}
+								>
+									<Text
+										style={FORGOT_PASSWORD}
+									>
+										{translate(`common.forgotPassword`)}
+									</Text>
+								</TouchableOpacity>
+								
+								
+								<View
+									style={BUTTON_VIEW}
+								>
+									<Button
+										style={CONTINUE_BUTTON}
+										textStyle={CONTINUE_BUTTON_TEXT}
+										disabled={isLoading}
+										onPress={() => this.formik.handleSubmit()}
+									>
+										{
+											isLoading
+												? <ActivityIndicator size="small" color={colors.white} />
+												: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.logIn`)}</Text>
+										}
+									</Button>
+								</View>
 							
 							
 							</View>
 							
-							<TouchableOpacity
-								onPress={() => navigation.navigate('signIn')}
+							<View
 								style={BOTTOM_VIEW}
 							>
 								
-								<Text
-									style={BOTTOM_TEXT}
+								<TouchableOpacity
+									style={{
+										justifyContent: 'space-between',
+										alignSelf: "center"
+									}}
 								>
-									{translate(`common.exitingUser`)}
-								</Text>
+									<Text
+										style={BOTTOM_TEXT}
+									>
+										{translate(`signIn.fingerPrint`)}
+									</Text>
+									
+									<Image
+										source={images.fingerPrint}
+										style={{
+											alignSelf: "center",
+											marginTop: 15
+										}}
+									/>
+								</TouchableOpacity>
 								
-								<Text
-									style={BOTTOM_TEXT_LOGIN}
+								<TouchableOpacity
+									onPress={() => {
+										if(authUserType === "Individual") {
+											navigation.navigate('indSignUp')
+										} else if(authUserType === "Doctor") {
+											navigation.navigate('docSignUp')
+										} else if(authUserType === "Company") {
+											navigation.navigate('comSignUp')
+										}
+									}}
+									// onPress={() => navigation.navigate('indSignUp')}
+									style={{
+										flexDirection: "row"
+									}}
 								>
-									{translate(`common.logIn`)}
-								</Text>
+									<Text
+										style={BOTTOM_TEXT}
+									>
+										{translate(`signIn.signUp`)}
+									</Text>
+									
+									<Text
+										style={BOTTOM_TEXT_LOGIN}
+									>
+										{translate(`common.signUp`)}
+									</Text>
+								</TouchableOpacity>
 							
-							</TouchableOpacity>
+							</View>
 						</View>
 					</ImageBackground>
 				
@@ -448,19 +422,18 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpDoctorAsync: (values: signUpCredentials) => dispatch(signUpDoctorAsync(values)),
+	signUpAsync: (values: signUpCredentials) => dispatch(signUpIndividualAsync(values)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
 mapStateToProps = (state: ApplicationState): StateProps => ({
-	authFullName: state.auth.fullName,
+	authUserType: state.auth.userType,
 	authEmail: state.auth.email,
-	authFolioNumber: state.auth.folioNumber,
 	isLoading: state.auth.loading,
 });
 
-export const DocSignUpScreen = connect<StateProps>(
+export const SignInScreen = connect<StateProps>(
 	// @ts-ignore
 	mapStateToProps,
 	mapDispatchToProps
-)(DocSignUp);
+)(SignIn);
