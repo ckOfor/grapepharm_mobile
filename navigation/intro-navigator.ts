@@ -6,26 +6,22 @@ export const IntroNavigator = createStackNavigator({
 	introOne: {
 		screen: IntroOneScreen,
 		navigationOptions: {
-			header: null
+			header: null,
+			gesturesEnabled: false
 		}
 	},
 	introTwo: {
 		screen: IntroTwoScreen,
 		navigationOptions: {
-			header: null
+			header: null,
+			gesturesEnabled: false
 		}
 	},
 	introThree: {
 		screen: IntroThreeScreen,
 		navigationOptions: {
-			header: null
+			header: null,
+			gesturesEnabled: false
 		}
 	},
-	continue: {
-		screen: ContinueScreen,
-		navigationOptions: {
-			header: null
-		}
-	},
-	
 });

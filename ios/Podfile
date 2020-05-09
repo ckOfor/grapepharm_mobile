@@ -38,6 +38,9 @@ target 'grapepharm' do
 
   # Other native modules
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Messaging'
 
   # Automatically detect installed unimodules
   use_unimodules!

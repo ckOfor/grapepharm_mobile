@@ -6,13 +6,14 @@ import {
 	View,
 	ViewStyle,
 	StatusBar,
-	Platform, Image, ImageStyle, Text, TextStyle
+	Platform, Image, ImageStyle, Text, TextStyle, Alert
 } from "react-native";
 
 // third-party
 import { NavigationScreenProps } from "react-navigation";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import * as Permissions from 'expo-permissions';
 
 // redux
 import { ApplicationState } from "../../redux";
@@ -25,9 +26,11 @@ import {Layout} from "../../constants";
 import {colors, fonts, images} from "../../theme";
 import {translate} from "../../i18n";
 import GestureRecognizer, {swipeDirections} from "react-native-swipe-gestures";
+import {checkNotificationPermissionAsync} from "../../redux/startup";
+import firebase from "react-native-firebase";
 
 interface DispatchProps {
-
+	checkNotificationPermission: () => Permissions.PermissionStatus | any
 }
 
 interface StateProps {
@@ -46,14 +49,14 @@ const ROOT: ViewStyle = {
 };
 
 const HEADER_TEXT: TextStyle = {
-	color: '#00545B',
+	color: colors.darkGreen,
 	fontSize: 20,
 	marginTop: 30,
 	fontFamily: fonts.PoppinsSemiBold
 };
 
 const DESCRIPTION: TextStyle = {
-	color: '#00545B',
+	color: colors.darkGreen,
 	fontSize: 14,
 	marginTop: 10,
 	fontFamily: fonts.PoppinsLight
@@ -82,6 +85,71 @@ const NEXT_BUTTON_TEXT: TextStyle = {
 
 class IntroOne extends React.Component<NavigationScreenProps & Props> {
 	
+	componentDidMount() {
+		this.props.checkNotificationPermission()
+		this.createNotificationListeners(); //add this line
+	}
+	
+	//Remove listeners allocated in createNotificationListeners()
+	componentWillUnmount() {
+		// @ts-ignore
+		this.notificationListener();
+		// @ts-ignore
+		this.notificationOpenedListener();
+	}
+	
+	async createNotificationListeners() {
+		console.log('createNotificationListeners')
+		/*
+		* Triggered when a particular notification has been received in foreground
+		* */
+		// @ts-ignore
+		this.notificationListener = firebase.notifications().onNotification((notification) => {
+			const { title, body } = notification;
+			this.showAlert(title, body);
+			console.log('notificationListener')
+		});
+		
+		/*
+		* If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+		* */
+		// @ts-ignore
+		this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+			const { title, body } = notificationOpen.notification;
+			this.showAlert(title, body)
+			console.log('notificationOpenedListener');
+		});
+		
+		/*
+		* If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+		* */
+		const notificationOpen = await firebase.notifications().getInitialNotification();
+		if (notificationOpen) {
+			const { title, body } = notificationOpen.notification;
+			this.showAlert(title, body);
+			console.log('notificationOpen');
+		}
+		/*
+		* Triggered for data only payload in foreground
+		* */
+		// @ts-ignore
+		this.messageListener = firebase.messaging().onMessage((message) => {
+			//process data message
+			console.log(JSON.stringify(message));
+		});
+	}
+	
+	// @ts-ignore
+	showAlert(title, body) {
+		Alert.alert(
+			title, body,
+			[
+				{ text: 'OK', onPress: () => console.log('OK Pressed') },
+			],
+			{ cancelable: false },
+		);
+	}
+	
 	onSwipe = (gestureName: any, gestureState: any) => {
 		const { SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
 		this.setState({gestureName: gestureName});
@@ -94,10 +162,6 @@ class IntroOne extends React.Component<NavigationScreenProps & Props> {
 				break;
 		}
 	};
-	
-	onSwipeLeft() {
-		this.props.navigation.navigate('introTwo')
-	}
 	
 	public render(): React.ReactNode {
 		
@@ -120,7 +184,7 @@ class IntroOne extends React.Component<NavigationScreenProps & Props> {
 					{
 						Platform.OS === "ios"
 							? <StatusBar barStyle="dark-content" />
-							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.purple} />
+							: <StatusBar barStyle={"dark-content"} translucent />
 					}
 					
 					<Image
@@ -163,7 +227,7 @@ class IntroOne extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-
+	checkNotificationPermission: () => dispatch(checkNotificationPermissionAsync()),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;

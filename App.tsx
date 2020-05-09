@@ -10,7 +10,6 @@ import { PersistGate } from "redux-persist/integration/react"
 import { NavigationScreenProps } from "react-navigation"
 import * as Font from "expo-font"
 import { Asset } from 'expo-asset'
-import * as Animatable from 'react-native-animatable';
 import SplashScreen from 'react-native-splash-screen'
 import { Root } from "native-base";
 
@@ -84,8 +83,8 @@ class App extends React.Component<Props, State> {
                 :
                 <StatusBar
                   barStyle={"dark-content"}
-                  // translucent
-                  // backgroundColor={colors.purple}
+                  translucent
+                  backgroundColor={colors.companyGreenTwo}
                 />
             }
             
@@ -139,15 +138,16 @@ class App extends React.Component<Props, State> {
         require('./assets/individualIcon.png'),
         require('./assets/doctorsIcon.png'),
         require('./assets/companyIcon.png'),
+        require('./assets/continueBackgroundLogo.png'),
       ]),
       Font.loadAsync({
         "Gibson-Bold": require("./assets/fonts/gibson-bold.ttf"),
         "Gibson-Regular": require("./assets/fonts/Gibson-Regular.ttf"),
         "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
-        // "Roboto": require('native-base/Fonts/Roboto.ttf'),
-        // "Roboto_medium": require('native-base/Fonts/Roboto_medium.ttf'),
         "Rockwell": require('./assets/fonts/rockwell.ttf'),
         "Poppins-Light": require('./assets/fonts/Poppins-Light.ttf'),
+        "Poppins-Medium": require('./assets/fonts/Poppins-Medium.ttf'),
+        "Montserrat-Bold": require('./assets/fonts/Montserrat-Bold.otf'),
       }),
     ]);
     

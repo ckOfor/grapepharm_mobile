@@ -44,14 +44,14 @@ const ROOT: ViewStyle = {
 };
 
 const HEADER_TEXT: TextStyle = {
-	color: '#00545B',
+	color: colors.darkGreen,
 	fontSize: 20,
 	marginTop: 30,
 	fontFamily: fonts.PoppinsSemiBold
 };
 
 const DESCRIPTION: TextStyle = {
-	color: '#00545B',
+	color: colors.darkGreen,
 	fontSize: 14,
 	marginTop: 10,
 	fontFamily: fonts.PoppinsLight
@@ -125,7 +125,7 @@ class IntroTwo extends React.Component<NavigationScreenProps & Props> {
 					{
 						Platform.OS === "ios"
 							? <StatusBar barStyle="dark-content" />
-							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.purple} />
+							: <StatusBar barStyle={"dark-content"} translucent />
 					}
 					
 					<Image

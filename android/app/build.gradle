@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+//Put this on bottom of file
+apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 
@@ -129,7 +131,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     defaultConfig {
         applicationId "com.grapepharm"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -147,10 +148,16 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file('/Users/chineduofor/Documents/grapepharm/mobile/grapepharm/android/app/debug.keystore')
+            storePassword 'grapepharm'
+            keyAlias 'grapepharm'
+            keyPassword 'grapepharm'
+        }
+        release {
+            storeFile file('/Users/chineduofor/Documents/grapepharm/mobile/grapepharm/android/app/release.keystore')
+            storePassword 'grapepharm'
+            keyAlias = 'grapepharm'
+            keyPassword 'grapepharm'
         }
     }
     buildTypes {
@@ -184,6 +191,13 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.google.android.gms:play-services-base:17.2.1"
+    implementation "com.google.firebase:firebase-core:17.4.0"
+    implementation "com.google.firebase:firebase-messaging:20.1.6"
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+    implementation(project(':react-native-firebase')) {
+        transitive = false
+    }
     addUnimodulesDependencies()
 
     if (enableHermes) {
@@ -203,3 +217,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+

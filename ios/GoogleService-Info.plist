@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.273507072258-6einj7inhebaaqi7n907nci58iru33j2</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD2rS6VSJAN1AXQWrtMQLxGHfgB9N3mb68</string>
+	<key>GCM_SENDER_ID</key>
+	<string>273507072258</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.grapepharm</string>
+	<key>PROJECT_ID</key>
+	<string>grapepharm</string>
+	<key>STORAGE_BUCKET</key>
+	<string>grapepharm.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:273507072258:ios:d5b67d6f6126542eed2a1b</string>
+	<key>DATABASE_URL</key>
+	<string>https://grapepharm.firebaseio.com</string>
+</dict>
+</plist>

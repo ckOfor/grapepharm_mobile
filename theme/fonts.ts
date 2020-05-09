@@ -5,5 +5,8 @@ export const fonts = {
   rockwell: "Rockwell",
   PoppinsSemiBold: "Poppins-SemiBold",
   PoppinsLight: "Poppins-Light",
-}
+  PoppinsMedium: "Poppins-Medium",
+  MontserratBold: "Montserrat-Bold",
+};
+
 export type FontKeys = keyof typeof fonts

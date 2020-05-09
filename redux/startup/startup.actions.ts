@@ -14,7 +14,7 @@ import {Linking, Platform} from "react-native";
 import firebase from 'react-native-firebase';
 import { AsyncStorage } from 'react-native';
 import { Toast } from "native-base";
-
+import {setFCMToken} from "../auth";
 
 const isIos = Platform.OS === "ios"
 
@@ -121,6 +121,7 @@ export const checkNotificationPermissionAsync = (): ThunkAction<
   null,
   Action<any>
   > => async (dispatch, getState) => {
+  console.tron.log('YUp')
   try {
     console.tron.log("Called")
     const hasPermission = await firebase.messaging().hasPermission();

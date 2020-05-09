@@ -1,15 +1,39 @@
 {
   "common": {
-    "appName": "NewJerusalemClothing"
+    "appName": "GrapePharm",
+    "signUp": "Sign Up",
+    "logIn": "Log In",
+    "exitingUser": "Already have an account? ",
+    "change": "Change",
+    "fullNamePlaceHolder": "Full Name",
+    "emailPlaceHolder": "Email",
+    "passwordPlaceHolder": "Password",
+    "confirmPasswordPlaceHolder": "Confirm Password",
+    "fieldRequired": "This field is required",
+    "fieldTooShort": "Too short",
+    "fullNameError": "Incorrect name e.g John Doe",
+    "emailError": "invalid email format",
+    "passwordError": "Password length must be 6 or more",
+    "confirmPassword": "Password does not match",
+    "register": "Register"
   },
   "intro": {
     "screenOneHeader": "Individual",
-    "screenTwoHeader": "Doctors",
-    "screenThreeHeader": "Companies",
+    "screenTwoHeader": "Doctor",
+    "screenThreeHeader": "Company",
     "screenOneDescription": "Get your drugs delivered to you",
     "screenTwoDescription": "Prescribe directly to pharmacies",
     "screenThreeDescription": "Process all orders online",
     "screenOneButtonText": "Next",
     "screenThreeButtonText": "Get Started"
+  },
+  "continue": {
+    "header": "Continue as",
+    "termsAndConditions": "By continuing, you agree to Terms & Conditions"
+  },
+  "indSignUp": {
+    "userText": "Individual",
+    "ageVerification": "Age Verification",
+    "ageDescription": "By ticking this checkbox, you agree to be above 17 years"
   }
 }

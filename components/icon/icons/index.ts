@@ -10,6 +10,7 @@ export const icons = {
   notificationIcon: require("./notification-icon.png"),
   menuIcon: require("./menu-icon.png"),
   walletIcon: require("./wallet-icon.png"),
+  arrowBackWhite: require("./arrow-back-white.png"),
 }
 
 export type IconTypes = keyof typeof icons

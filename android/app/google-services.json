@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "273507072258",
+    "firebase_url": "https://grapepharm.firebaseio.com",
+    "project_id": "grapepharm",
+    "storage_bucket": "grapepharm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273507072258:android:0836e3fa9eda80e2ed2a1b",
+        "android_client_info": {
+          "package_name": "com.grapepharm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273507072258-d7qp1o9m701j9gi0unfv47a6e9q0ocve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa8cMcOLy0oDR-3zPjHvSObgjXJNtDD_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273507072258-d7qp1o9m701j9gi0unfv47a6e9q0ocve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

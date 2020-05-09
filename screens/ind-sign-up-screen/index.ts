@@ -1,0 +1,1 @@
+export * from './ind-sign-up-screen'

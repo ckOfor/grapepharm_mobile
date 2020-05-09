@@ -31,6 +31,8 @@ export const palette = {
 
 export const colors = {
   palette,
+  red: "#D40000",
+  AuthBG: "#F5F5F5",
   ceruleanBlue: "#254FD0",
   kleinBlue: "#0034bb",
   navyBlue: "#000090",
@@ -48,6 +50,12 @@ export const colors = {
   shark: "#2c2e30",
   black: "#000000",
   companyGreen: "#00C4D6",
+  borderColor: "#ECECEC",
+  companyGreenTwo: "#36C2CF",
+  textFieldBGColor: "#F6F6F6",
+  textFieldBDColor: "#D6D6D6",
+  darkPurple: "#898A8F",
+  darkGreen: "#00545B",
   submarine: "#b8bfc6",
   rockBlue: "#99a7cc",
   regentGray: "#7c86a2",

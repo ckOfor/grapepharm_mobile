@@ -44,14 +44,14 @@ const ROOT: ViewStyle = {
 };
 
 const HEADER_TEXT: TextStyle = {
-	color: '#00545B',
+	color: colors.darkGreen,
 	fontSize: 20,
 	marginTop: 30,
 	fontFamily: fonts.PoppinsSemiBold
 };
 
 const DESCRIPTION: TextStyle = {
-	color: '#00545B',
+	color: colors.darkGreen,
 	fontSize: 14,
 	marginTop: 10,
 	fontFamily: fonts.PoppinsLight
@@ -87,7 +87,7 @@ class IntroThree extends React.Component<NavigationScreenProps & Props> {
 		this.setState({gestureName: gestureName});
 		switch (gestureName) {
 			case SWIPE_LEFT:
-				navigation.navigate('continue');
+				navigation.navigate('Auth');
 				break;
 			case SWIPE_RIGHT:
 				navigation.navigate('introTwo')
@@ -125,7 +125,7 @@ class IntroThree extends React.Component<NavigationScreenProps & Props> {
 					{
 						Platform.OS === "ios"
 							? <StatusBar barStyle="dark-content" />
-							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.purple} />
+							: <StatusBar barStyle={"dark-content"} translucent />
 					}
 					
 					<Image
@@ -156,7 +156,7 @@ class IntroThree extends React.Component<NavigationScreenProps & Props> {
 					<Button
 						style={NEXT_BUTTON}
 						textStyle={NEXT_BUTTON_TEXT}
-						onPress={() => navigation.navigate('continue')}
+						onPress={() => navigation.navigate('Auth')}
 						tx={`intro.screenThreeButtonText`}
 					/>
 				</View>
