@@ -34,35 +34,32 @@ import { translate } from "../../i18n";
 import { Header } from "../../components/header";
 import {TextField} from "../../components/text-field";
 import {Button} from "../../components/button";
-import {signUpIndividualAsync, signUpCredentials} from "../../redux/auth";
-import {fullNameRegExp} from "../../utils/regexes";
+import {signUpIndividualAsync, signUpCredentials, signUpCompanyAsync} from "../../redux/auth";
 
 interface DispatchProps {
-	signUpAsync: (values: signUpCredentials) => void
+	signUpCompanyAsync: (values: signUpCredentials) => void
 }
 
 interface StateProps {
-	authFullName: string
+	authCompanyName: string
 	authEmail: string
 	isLoading: boolean
 }
 
 interface MyFormValues {
-	fullName: string
+	companyName: string
 	email: string
 	password: string
 	confirmPassword: string
 }
 
-interface ContactUsScreenProps extends NavigationScreenProps {}
+interface ComSignUpProps extends NavigationScreenProps {}
 
-type Props = DispatchProps & StateProps & ContactUsScreenProps
-
+type Props = DispatchProps & StateProps & ComSignUpProps
 
 const schema = Yup.object().shape({
-	fullName: Yup.string()
-		.min(4, "common.fieldTooShort")
-		.matches(fullNameRegExp, "common.fullNameError")
+	companyName: Yup.string()
+		.min(3, "common.fieldTooShort")
 		.required("common.fullNameError"),
 	email: Yup.string()
 		.email("common.emailError")
@@ -76,7 +73,6 @@ const schema = Yup.object().shape({
 })
 
 const ROOT: ViewStyle = {
-	// height: '100%',
 	alignItems: 'center',
 };
 
@@ -99,7 +95,6 @@ const BACKGROUND_VIEW: ViewStyle = {
 
 const TOP_VIEW: ViewStyle = {
 	backgroundColor: '#FFFFFF',
-	// height: '100%',
 	width: Layout.window.width / 1.1,
 	borderRadius: 15,
 	borderWidth: 1,
@@ -154,16 +149,16 @@ const FIELD: ViewStyle = {
 	marginTop: 20
 }
 
-const AGE_TEXT: TextStyle = {
+const REGISTER: TextStyle = {
 	color: colors.darkGreen,
-	// fontSize: 15,
 	fontFamily: fonts.PoppinsMedium,
 	marginLeft: 35,
 };
 
 const TICK_TEXT: TextStyle = {
-	...CHANGE_TEXT,
-	width: '70%',
+	color: colors.darkPurple,
+	fontSize: 13,
+	marginLeft: 15,
 	fontFamily: fonts.PoppinsRegular,
 };
 
@@ -172,12 +167,14 @@ const AGE_ICON: ImageStyle = {
 };
 
 const AGE_RESTRICTION_VIEW: TextStyle = {
-	marginLeft: 25,
-	marginTop: 10,
+	marginLeft: 35,
 	marginBottom: 20,
+	width: Layout.window.width / 3,
+};
+
+const RADIO_VIEW: TextStyle = {
+	marginTop: 10,
 	flexDirection: 'row',
-	width: Layout.window.width / 1.3,
-	justifyContent: 'space-between'
 };
 
 const BUTTON_VIEW: ViewStyle = {
@@ -204,29 +201,37 @@ const BOTTOM_TEXT_LOGIN: TextStyle = {
 	fontFamily: fonts.PoppinsMedium
 };
 
-class IndSignUp extends React.Component<NavigationScreenProps & Props> {
+class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 	
-	fullNameInput: NativeMethodsMixinStatic | any
+	companyNameInput: NativeMethodsMixinStatic | any
 	emailInput: NativeMethodsMixinStatic | any
 	passwordInput: NativeMethodsMixinStatic | any
 	confirmPasswordInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
 	
 	state={
-		termsAndConditions: false
+		pharmacy: true,
+		manufacturer: false,
 	}
 	
 	submit = (values: signUpCredentials) => {
-		this.props.signUpAsync(values)
+		const { manufacturer } = this.state
+		
+		const newValues = {
+			...values,
+			companyType: manufacturer ? "manufacturer" : "pharmacy"
+		}
+		// console.tron.log(newValues)
+		this.props.signUpCompanyAsync(newValues)
 	}
 	
 	public render(): React.ReactNode {
 		
 		const {
-			navigation, authFullName, authEmail, isLoading
+			navigation, authCompanyName, authEmail, isLoading
 		} = this.props
 		
-		const { termsAndConditions } = this.state
+		const { pharmacy, manufacturer } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -281,7 +286,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 									<Text
 										style={USER_TYPE}
 									>
-										{translate(`indSignUp.userText`)}
+										{translate(`comSignUp.company`)}
 									</Text>
 									
 									<TouchableOpacity
@@ -297,7 +302,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 								
 								<Formik
 									initialValues={{
-										fullName: authFullName,
+										companyName: authCompanyName,
 										email: authEmail,
 										password: "",
 										confirmPassword: "",
@@ -323,19 +328,19 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 												style={FIELD}
 											>
 												<TextField
-													name="fullName"
+													name="companyName"
 													keyboardType="default"
-													placeholderTx="common.fullNamePlaceHolder"
-													value={values.fullName}
-													onChangeText={handleChange("fullName")}
-													onBlur={handleBlur("fullName")}
+													placeholderTx="common.companyNamePlaceHolder"
+													value={values.companyName}
+													onChangeText={handleChange("companyName")}
+													onBlur={handleBlur("companyName")}
 													autoCapitalize="words"
 													returnKeyType="next"
 													isInvalid={!isValid}
-													fieldError={errors.fullName}
+													fieldError={errors.companyName}
 													onSubmitEditing={() => this.emailInput.focus()}
 													forwardedRef={i => {
-														this.fullNameInput = i
+														this.companyNameInput = i
 													}}
 												/>
 												
@@ -393,37 +398,63 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 														Keyboard.dismiss()
 													}}
 												/>
-												
-												
+											
+											
 											</View>
 										</View>
 									)}
 								</Formik>
 								
 								<Text
-									style={AGE_TEXT}
+									style={REGISTER}
 								>
-									{translate(`indSignUp.ageVerification`)}
+									{translate(`comSignUp.registerAs`)}
 								</Text>
 								
 								<View
 									style={AGE_RESTRICTION_VIEW}
 								>
-									<Text
-										style={TICK_TEXT}
+									<View
+										style={RADIO_VIEW}
 									>
-										{translate(`indSignUp.ageDescription`)}
-									</Text>
+										<TouchableOpacity
+											onPress={() => !pharmacy && this.setState({ pharmacy : !pharmacy, manufacturer: !manufacturer })}
+										>
+											<Image
+												source={pharmacy ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
+												style={AGE_ICON}
+											/>
+										</TouchableOpacity>
+										
+										<Text
+											style={[TICK_TEXT, { color: pharmacy ? colors.companyGreenTwo : colors.darkPurple }]}
+										
+										>
+											{translate(`comSignUp.pharmacy`)}
+										</Text>
+									</View>
 									
-									<TouchableOpacity
-										onPress={() => this.setState({ termsAndConditions: !termsAndConditions })}
+									<View
+										style={RADIO_VIEW}
 									>
-										<Image
-											source={termsAndConditions ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
-											style={AGE_ICON}
-										/>
-									</TouchableOpacity>
+										<TouchableOpacity
+											onPress={() => !manufacturer && this.setState({ pharmacy : !pharmacy, manufacturer: !manufacturer })}
+										>
+											<Image
+												source={manufacturer ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
+												style={AGE_ICON}
+											/>
+										</TouchableOpacity>
+										
+										<Text
+											style={[TICK_TEXT, { color: manufacturer ? colors.companyGreenTwo : colors.darkPurple }]}
+										>
+											{translate(`comSignUp.manufacturer`)}
+										</Text>
+									</View>
+									
 								</View>
+								
 								
 								<View
 									style={BUTTON_VIEW}
@@ -431,7 +462,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 									<Button
 										style={CONTINUE_BUTTON}
 										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading || !termsAndConditions}
+										disabled={isLoading}
 										onPress={() => this.formik.handleSubmit()}
 									>
 										{
@@ -441,7 +472,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 										}
 									</Button>
 								</View>
-								
+							
 							
 							</View>
 							
@@ -464,7 +495,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 							</TouchableOpacity>
 						</View>
 					</ImageBackground>
-					
+				
 				</ScrollView>
 			
 			</KeyboardAvoidingView>
@@ -473,18 +504,18 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpAsync: (values: signUpCredentials) => dispatch(signUpIndividualAsync(values)),
+	signUpCompanyAsync: (values: signUpCredentials) => dispatch(signUpCompanyAsync(values)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
 mapStateToProps = (state: ApplicationState): StateProps => ({
-	authFullName: state.auth.fullName,
+	authCompanyName: state.auth.companyName,
 	authEmail: state.auth.email,
 	isLoading: state.auth.loading,
 });
 
-export const IndSignUpScreen = connect<StateProps>(
+export const ComSignUpScreen = connect<StateProps>(
 	// @ts-ignore
 	mapStateToProps,
 	mapDispatchToProps
-)(IndSignUp);
+)(ComSignUp);

@@ -133,17 +133,17 @@ class Continue extends React.Component<NavigationScreenProps & Props> {
 				<Button
 					style={NEXT_BUTTON}
 					textStyle={NEXT_BUTTON_TEXT}
-					// onPress={() => navigation.navigate('introTwo')}
+					onPress={() => navigation.navigate('docSignUp')}
 					tx={`intro.screenTwoHeader`}
 				/>
-				
+
 				<Button
 					style={NEXT_BUTTON}
 					textStyle={NEXT_BUTTON_TEXT}
-					// onPress={() => navigation.navigate('introTwo')}
+					onPress={() => navigation.navigate('comSignUp')}
 					tx={`intro.screenThreeHeader`}
 				/>
-				
+
 				<Text
 					style={BOTTOM_TEXT}
 				>

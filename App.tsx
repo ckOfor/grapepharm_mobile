@@ -147,6 +147,7 @@ class App extends React.Component<Props, State> {
         "Rockwell": require('./assets/fonts/rockwell.ttf'),
         "Poppins-Light": require('./assets/fonts/Poppins-Light.ttf'),
         "Poppins-Medium": require('./assets/fonts/Poppins-Medium.ttf'),
+        "Poppins-Regular": require('./assets/fonts/Poppins-Regular.ttf'),
         "Montserrat-Bold": require('./assets/fonts/Montserrat-Bold.otf'),
       }),
     ]);

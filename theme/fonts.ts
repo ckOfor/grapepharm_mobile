@@ -6,6 +6,7 @@ export const fonts = {
   PoppinsSemiBold: "Poppins-SemiBold",
   PoppinsLight: "Poppins-Light",
   PoppinsMedium: "Poppins-Medium",
+  PoppinsRegular: "Poppins-Regular",
   MontserratBold: "Montserrat-Bold",
 };
 

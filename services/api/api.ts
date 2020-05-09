@@ -36,7 +36,7 @@ const processResponse = async (response: any): Promise<any> => {
   return { kind: "ok", data: response.data }
 }
 
-const signUp = async (values: signUpCredentials): Promise<
+const signUpIndividual = async (values: signUpCredentials): Promise<
   Types.getResponse
   > => {
   const response = await api.post("/individual/signup", {
@@ -45,6 +45,26 @@ const signUp = async (values: signUpCredentials): Promise<
   return processResponse(response)
 }
 
+const signUpDoctor = async (values: signUpCredentials): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post("/doctor/signup", {
+    ...values
+  })
+  return processResponse(response)
+}
+
+const signUpCompany = async (values: signUpCredentials): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post("/company/signup", {
+    ...values
+  })
+  return processResponse(response)
+}
+
 export {
-  signUp,
+  signUpIndividual,
+  signUpDoctor,
+  signUpCompany
 }

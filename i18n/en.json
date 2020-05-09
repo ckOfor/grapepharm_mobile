@@ -6,6 +6,11 @@
     "exitingUser": "Already have an account? ",
     "change": "Change",
     "fullNamePlaceHolder": "Full Name",
+    "companyNamePlaceHolder": "Company Name",
+    "folioNumberPlaceHolder": "Folio No",
+    "folioNumberTooShortError": "Folio number is too short",
+    "folioNumberInvalid": "Enter a valid folio number",
+    "folioNumberError": "Folio number is required",
     "emailPlaceHolder": "Email",
     "passwordPlaceHolder": "Password",
     "confirmPasswordPlaceHolder": "Confirm Password",
@@ -35,5 +40,14 @@
     "userText": "Individual",
     "ageVerification": "Age Verification",
     "ageDescription": "By ticking this checkbox, you agree to be above 17 years"
+  },
+  "docSignUp": {
+    "userText": "Doctor"
+  },
+  "comSignUp": {
+    "company": "Company",
+    "registerAs": "Register as:",
+    "pharmacy": "Pharmacy",
+    "manufacturer": "Manufacturer"
   }
 }

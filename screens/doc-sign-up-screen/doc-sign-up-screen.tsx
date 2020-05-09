@@ -11,7 +11,6 @@ import {
 	ImageStyle,
 	Text,
 	TextStyle,
-	Image,
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView
@@ -26,24 +25,27 @@ import * as Yup from "yup";
 
 // redux
 import { ApplicationState } from "../../redux";
+import { signUpCredentials, signUpDoctorAsync } from "../../redux/auth";
 
 // styles
 import { Layout } from "../../constants";
 import { colors, fonts, images } from "../../theme";
 import { translate } from "../../i18n";
 import { Header } from "../../components/header";
-import {TextField} from "../../components/text-field";
-import {Button} from "../../components/button";
-import {signUpIndividualAsync, signUpCredentials} from "../../redux/auth";
-import {fullNameRegExp} from "../../utils/regexes";
+import { TextField } from "../../components/text-field";
+import { Button } from "../../components/button";
+
+// utils
+import {folioNumberRegExp, fullNameRegExp} from "../../utils/regexes";
 
 interface DispatchProps {
-	signUpAsync: (values: signUpCredentials) => void
+	signUpDoctorAsync: (values: signUpCredentials) => void
 }
 
 interface StateProps {
 	authFullName: string
 	authEmail: string
+	authFolioNumber: string
 	isLoading: boolean
 }
 
@@ -52,18 +54,22 @@ interface MyFormValues {
 	email: string
 	password: string
 	confirmPassword: string
+	folioNumber: string
 }
 
 interface ContactUsScreenProps extends NavigationScreenProps {}
 
 type Props = DispatchProps & StateProps & ContactUsScreenProps
 
-
 const schema = Yup.object().shape({
 	fullName: Yup.string()
 		.min(4, "common.fieldTooShort")
 		.matches(fullNameRegExp, "common.fullNameError")
 		.required("common.fullNameError"),
+	folioNumber: Yup.string()
+		.min(5, "common.folioNumberTooShortError")
+		.matches(folioNumberRegExp, "common.folioNumberInvalid")
+		.required("common.folioNumberError"),
 	email: Yup.string()
 		.email("common.emailError")
 		.required("common.fieldRequired"),
@@ -72,7 +78,7 @@ const schema = Yup.object().shape({
 		.required("common.fieldRequired"),
 	confirmPassword: Yup.string()
 		.oneOf([Yup.ref('password')], 'common.confirmPassword')
-		.required("common.fieldRequired"),
+		.required("common.fieldRequired")
 })
 
 const ROOT: ViewStyle = {
@@ -154,32 +160,6 @@ const FIELD: ViewStyle = {
 	marginTop: 20
 }
 
-const AGE_TEXT: TextStyle = {
-	color: colors.darkGreen,
-	// fontSize: 15,
-	fontFamily: fonts.PoppinsMedium,
-	marginLeft: 35,
-};
-
-const TICK_TEXT: TextStyle = {
-	...CHANGE_TEXT,
-	width: '70%',
-	fontFamily: fonts.PoppinsRegular,
-};
-
-const AGE_ICON: ImageStyle = {
-	marginBottom: 5
-};
-
-const AGE_RESTRICTION_VIEW: TextStyle = {
-	marginLeft: 25,
-	marginTop: 10,
-	marginBottom: 20,
-	flexDirection: 'row',
-	width: Layout.window.width / 1.3,
-	justifyContent: 'space-between'
-};
-
 const BUTTON_VIEW: ViewStyle = {
 	marginBottom: 15
 }
@@ -204,12 +184,13 @@ const BOTTOM_TEXT_LOGIN: TextStyle = {
 	fontFamily: fonts.PoppinsMedium
 };
 
-class IndSignUp extends React.Component<NavigationScreenProps & Props> {
+class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 	
 	fullNameInput: NativeMethodsMixinStatic | any
 	emailInput: NativeMethodsMixinStatic | any
 	passwordInput: NativeMethodsMixinStatic | any
 	confirmPasswordInput: NativeMethodsMixinStatic | any
+	folioNumberInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
 	
 	state={
@@ -217,13 +198,13 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 	}
 	
 	submit = (values: signUpCredentials) => {
-		this.props.signUpAsync(values)
+		this.props.signUpDoctorAsync(values)
 	}
 	
 	public render(): React.ReactNode {
 		
 		const {
-			navigation, authFullName, authEmail, isLoading
+			navigation, authFullName, authEmail, authFolioNumber, isLoading
 		} = this.props
 		
 		const { termsAndConditions } = this.state
@@ -281,7 +262,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 									<Text
 										style={USER_TYPE}
 									>
-										{translate(`indSignUp.userText`)}
+										{translate(`docSignUp.userText`)}
 									</Text>
 									
 									<TouchableOpacity
@@ -301,6 +282,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 										email: authEmail,
 										password: "",
 										confirmPassword: "",
+										folioNumber: authFolioNumber,
 									}}
 									validationSchema={schema}
 									onSubmit={this.submit}
@@ -389,59 +371,51 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 														this.confirmPasswordInput = i
 													}}
 													blurOnSubmit={false}
+													onSubmitEditing={() => this.folioNumberInput.focus()}
+												/>
+												
+												<TextField
+													name="folioNumber"
+													keyboardType="default"
+													placeholderTx="common.folioNumberPlaceHolder"
+													value={values.folioNumber}
+													onChangeText={handleChange("folioNumber")}
+													onBlur={handleBlur("folioNumber")}
+													autoCapitalize="none"
+													returnKeyType="next"
+													isInvalid={!isValid}
+													fieldError={errors.folioNumber}
+													// onSubmitEditing={() => this.emailInput.focus()}
+													forwardedRef={i => {
+														this.folioNumberInput = i
+													}}
 													onSubmitEditing={()=> {
 														Keyboard.dismiss()
 													}}
 												/>
 												
-												
+												<View
+													style={BUTTON_VIEW}
+												>
+													<Button
+														style={CONTINUE_BUTTON}
+														textStyle={CONTINUE_BUTTON_TEXT}
+														disabled={isLoading}
+														onPress={() => this.formik.handleSubmit()}
+													>
+														{
+															isLoading
+																? <ActivityIndicator size="small" color={colors.white} />
+																: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
+														}
+													</Button>
+												</View>
 											</View>
 										</View>
 									)}
-								</Formik>
-								
-								<Text
-									style={AGE_TEXT}
-								>
-									{translate(`indSignUp.ageVerification`)}
-								</Text>
-								
-								<View
-									style={AGE_RESTRICTION_VIEW}
-								>
-									<Text
-										style={TICK_TEXT}
-									>
-										{translate(`indSignUp.ageDescription`)}
-									</Text>
 									
-									<TouchableOpacity
-										onPress={() => this.setState({ termsAndConditions: !termsAndConditions })}
-									>
-										<Image
-											source={termsAndConditions ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
-											style={AGE_ICON}
-										/>
-									</TouchableOpacity>
-								</View>
-								
-								<View
-									style={BUTTON_VIEW}
-								>
-									<Button
-										style={CONTINUE_BUTTON}
-										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading || !termsAndConditions}
-										onPress={() => this.formik.handleSubmit()}
-									>
-										{
-											isLoading
-												? <ActivityIndicator size="small" color={colors.white} />
-												: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-										}
-									</Button>
-								</View>
-								
+								</Formik>
+							
 							
 							</View>
 							
@@ -464,7 +438,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 							</TouchableOpacity>
 						</View>
 					</ImageBackground>
-					
+				
 				</ScrollView>
 			
 			</KeyboardAvoidingView>
@@ -473,18 +447,19 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpAsync: (values: signUpCredentials) => dispatch(signUpIndividualAsync(values)),
+	signUpDoctorAsync: (values: signUpCredentials) => dispatch(signUpDoctorAsync(values)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
 mapStateToProps = (state: ApplicationState): StateProps => ({
 	authFullName: state.auth.fullName,
 	authEmail: state.auth.email,
+	authFolioNumber: state.auth.folioNumber,
 	isLoading: state.auth.loading,
 });
 
-export const IndSignUpScreen = connect<StateProps>(
+export const DocSignUpScreen = connect<StateProps>(
 	// @ts-ignore
 	mapStateToProps,
 	mapDispatchToProps
-)(IndSignUp);
+)(DocSignUp);

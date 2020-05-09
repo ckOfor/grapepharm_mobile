@@ -129,6 +129,7 @@ class IntroOne extends React.Component<NavigationScreenProps & Props> {
 			this.showAlert(title, body);
 			console.log('notificationOpen');
 		}
+
 		/*
 		* Triggered for data only payload in foreground
 		* */
@@ -138,7 +139,7 @@ class IntroOne extends React.Component<NavigationScreenProps & Props> {
 			console.log(JSON.stringify(message));
 		});
 	}
-	
+
 	// @ts-ignore
 	showAlert(title, body) {
 		Alert.alert(

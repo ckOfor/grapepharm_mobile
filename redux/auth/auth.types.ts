@@ -35,13 +35,55 @@ type SignUpIndividualActionFailure = {
 export const SIGN_UP_INDIVIDUAL_SUCCESS = "SIGN_UP_INDIVIDUAL_SUCCESS"
 type SignUpIndividualActionSuccess = {
 	type: typeof SIGN_UP_INDIVIDUAL_SUCCESS
+}
+
+export const SET_AUTH_FOLIO_NUMBER = "SET_AUTH_FOLIO_NUMBER"
+type SetAuthFolioNumberAction = {
+	type: typeof SET_AUTH_FOLIO_NUMBER
 	payload: string
+};
+
+export const SIGN_UP_DOCTOR = "SIGN_UP_DOCTOR"
+type SignUpDoctorAction = {
+	type: typeof SIGN_UP_DOCTOR
+}
+
+export const SIGN_UP_DOCTOR_FAILURE = "SIGN_UP_DOCTOR_FAILURE"
+type SignUpDoctorActionFailure = {
+	type: typeof SIGN_UP_DOCTOR_FAILURE
+}
+
+export const SIGN_UP_DOCTOR_SUCCESS = "SIGN_UP_DOCTOR_SUCCESS"
+type SignUpDoctorActionSuccess = {
+	type: typeof SIGN_UP_DOCTOR_SUCCESS
 }
 
 export const SET_USER_DETAILS = "SET_USER_DETAILS"
 type setUserDetails = {
 	type: typeof SET_USER_DETAILS
 	payload: IUser
+}
+
+export const SET_AUTH_COMPANY_NAME = "SET_AUTH_COMPANY_NAME"
+type SetAuthCompanyNameAction = {
+	type: typeof SET_AUTH_COMPANY_NAME
+	payload: string
+};
+
+
+export const SIGN_UP_COMPANY = "SIGN_UP_COMPANY"
+type SignUpCompanyAction = {
+	type: typeof SIGN_UP_COMPANY
+}
+
+export const SIGN_UP_COMPANY_FAILURE = "SIGN_UP_COMPANY_FAILURE"
+type SignUpCompanyActionFailure = {
+	type: typeof SIGN_UP_COMPANY_FAILURE
+}
+
+export const SIGN_UP_COMPANY_SUCCESS = "SIGN_UP_COMPANY_SUCCESS"
+type SignUpCompanyActionSuccess = {
+	type: typeof SIGN_UP_COMPANY_SUCCESS
 }
 
 export type IUser = {
@@ -69,22 +111,29 @@ export type IUser = {
 	suspensionReason: string
 	updatedAt: string
 	createdAt: string
+	licenseRegNumber: string
+	annualPractisingLicense: string
+	approvedBy: string
 }
 
 export type signUpCredentials = {
 	fullName: string
+	companyName?: string
 	email: string
 	password: string
 	userType?: string
+	folioNumber?: string
 	notificationId?: string
 }
 
 export type AuthState = {
 	fullName: string
+	companyName: string
 	email: string
 	userType: string
 	notificationId: string
 	loading: boolean
+	folioNumber: string
 	user: IUser | []
 }
 
@@ -97,3 +146,11 @@ export type AuthAction =
 	| SignUpIndividualActionSuccess
 	| setUserDetails
 	| SetFCMTokenAction
+	| SignUpDoctorAction
+	| SignUpDoctorActionFailure
+	| SignUpDoctorActionSuccess
+	| SetAuthFolioNumberAction
+	| SetAuthCompanyNameAction
+	| SignUpCompanyAction
+	| SignUpCompanyActionFailure
+	| SignUpCompanyActionSuccess
