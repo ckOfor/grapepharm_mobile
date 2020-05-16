@@ -5,9 +5,15 @@ import {
 	SET_AUTH_EMAIL,
 	SET_AUTH_FOLIO_NUMBER,
 	SET_AUTH_FULL_NAME,
+	SET_AUTH_PASSWORD,
 	SET_AUTH_USER_TYPE,
 	SET_FCM_TOKEN,
-	SET_USER_DETAILS,
+	SET_USER_DETAILS, SIGN_IN_USER,
+	SIGN_IN_USER_FAILURE,
+	SIGN_IN_USER_SUCCESS,
+	SIGN_IN_USER_WITH_BIOMETRICS,
+	SIGN_IN_USER_WITH_BIOMETRICS_FAILURE,
+	SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS,
 	SIGN_UP_COMPANY,
 	SIGN_UP_COMPANY_FAILURE,
 	SIGN_UP_COMPANY_SUCCESS,
@@ -23,6 +29,7 @@ const initialState: AuthState = {
 	fullName: "",
 	companyName: "",
 	email: "",
+	password: "",
 	userType: "",
 	notificationId: "",
 	folioNumber: "",
@@ -61,6 +68,10 @@ export function authReducer(
 			}
 		
 		case SIGN_UP_INDIVIDUAL:
+		case SIGN_UP_DOCTOR:
+		case SIGN_UP_COMPANY:
+		case SIGN_IN_USER_WITH_BIOMETRICS:
+		case SIGN_IN_USER:
 			return {
 				...state,
 				loading: true
@@ -68,6 +79,14 @@ export function authReducer(
 		
 		case SIGN_UP_INDIVIDUAL_FAILURE:
 		case SIGN_UP_INDIVIDUAL_SUCCESS:
+		case SIGN_UP_DOCTOR_FAILURE:
+		case SIGN_UP_DOCTOR_SUCCESS:
+		case SIGN_UP_COMPANY_FAILURE:
+		case SIGN_UP_COMPANY_SUCCESS:
+		case SIGN_IN_USER_WITH_BIOMETRICS_FAILURE:
+		case SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS:
+		case SIGN_IN_USER_FAILURE:
+		case SIGN_IN_USER_SUCCESS:
 			return {
 				...state,
 				loading: false
@@ -85,38 +104,18 @@ export function authReducer(
 				notificationId: action.payload
 			}
 		
-		case SIGN_UP_DOCTOR:
-			return {
-				...state,
-				loading: true
-			}
-
-		case SIGN_UP_DOCTOR_FAILURE:
-		case SIGN_UP_DOCTOR_SUCCESS:
-			return {
-				...state,
-				loading: false
-			}
-		
 		case SET_AUTH_COMPANY_NAME:
 			return {
 				...state,
 				companyName: action.payload
 			}
 		
-		case SIGN_UP_COMPANY:
+		case SET_AUTH_PASSWORD:
 			return {
 				...state,
-				loading: true
+				password: action.payload
 			}
 		
-		case SIGN_UP_COMPANY_FAILURE:
-		case SIGN_UP_COMPANY_SUCCESS:
-			return {
-				...state,
-				loading: false
-			}
-
 		default:
 			return state
 	}

@@ -25,7 +25,7 @@ import * as Yup from "yup";
 
 // redux
 import { ApplicationState } from "../../redux";
-import { signUpCredentials, signUpDoctorAsync } from "../../redux/auth";
+import { authCredentials, signUpDoctorAsync } from "../../redux/auth";
 
 // styles
 import { Layout } from "../../constants";
@@ -37,9 +37,12 @@ import { Button } from "../../components/button";
 
 // utils
 import {folioNumberRegExp, fullNameRegExp} from "../../utils/regexes";
+import firebase from "react-native-firebase";
+import {notify} from "../../redux/startup";
 
 interface DispatchProps {
-	signUpDoctorAsync: (values: signUpCredentials) => void
+	signUpDoctorAsync: (values: authCredentials) => void
+	notify: (message:string, type: string) => void
 }
 
 interface StateProps {
@@ -194,11 +197,33 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 	formik: NativeMethodsMixinStatic | any;
 	
 	state={
-		termsAndConditions: false
+		loading: false
 	}
 	
-	submit = (values: signUpCredentials) => {
-		this.props.signUpDoctorAsync(values)
+	onRegister = (values: { email: string; password: string; }) => {
+		const { email, password } = values;
+		const { signUpDoctorAsync, notify } = this.props;
+		
+		this.setState({ loading: true })
+		
+		firebase.auth().createUserWithEmailAndPassword(email, password)
+			.then((user) => {
+				// If you need to do anything with the user, do it here
+				// The user will be logged in automatically by the
+				// `onAuthStateChanged` listener we set up in App.js earlier
+				console.tron.log(user)
+				signUpDoctorAsync(values)
+				this.setState({ loading: false })
+			})
+			.catch((error) => {
+				const { code, message } = error;
+				// For details of error codes, see the docs
+				// The message contains the default Firebase string
+				// representation of the error
+				console.tron.log(error)
+				this.setState({ loading: false })
+				notify(`${message}`, 'danger')
+			});
 	}
 	
 	public render(): React.ReactNode {
@@ -207,7 +232,8 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 			navigation, authFullName, authEmail, authFolioNumber, isLoading
 		} = this.props
 		
-		const { termsAndConditions } = this.state
+		const { loading } = this.state
+		
 		
 		return (
 			<KeyboardAvoidingView
@@ -285,7 +311,7 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 										folioNumber: authFolioNumber,
 									}}
 									validationSchema={schema}
-									onSubmit={this.submit}
+									onSubmit={this.onRegister}
 									validateOnChange={false}
 									validateOnBlur={false}
 									enableReinitialize
@@ -398,16 +424,13 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 													style={BUTTON_VIEW}
 												>
 													<Button
+														loading={isLoading || loading}
 														style={CONTINUE_BUTTON}
 														textStyle={CONTINUE_BUTTON_TEXT}
 														disabled={isLoading}
 														onPress={() => this.formik.handleSubmit()}
 													>
-														{
-															isLoading
-																? <ActivityIndicator size="small" color={colors.white} />
-																: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-														}
+														<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
 													</Button>
 												</View>
 											</View>
@@ -448,7 +471,8 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpDoctorAsync: (values: signUpCredentials) => dispatch(signUpDoctorAsync(values)),
+	signUpDoctorAsync: (values: authCredentials) => dispatch(signUpDoctorAsync(values)),
+	notify: (message:string, type: string) => dispatch(notify(message, type)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;

@@ -14,7 +14,7 @@ import {
 	Image,
 	TouchableOpacity,
 	KeyboardAvoidingView,
-	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView
+	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView, Alert
 } from "react-native";
 
 // third-party
@@ -23,6 +23,9 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Formik, FormikProps } from "formik";
 import * as Yup from "yup";
+import * as LocalAuthentication from 'expo-local-authentication';
+import Expo from 'expo'
+import firebase from 'react-native-firebase';
 
 // redux
 import { ApplicationState } from "../../redux";
@@ -32,17 +35,21 @@ import { Layout } from "../../constants";
 import { colors, fonts, images } from "../../theme";
 import { translate } from "../../i18n";
 import { Header } from "../../components/header";
-import {TextField} from "../../components/text-field";
-import {Button} from "../../components/button";
-import {signUpIndividualAsync, signUpCredentials} from "../../redux/auth";
+import { TextField } from "../../components/text-field";
+import { Button } from "../../components/button";
+import {authCredentials, signInUserWithBiometricsAsync, signInUserAsync} from "../../redux/auth";
+import {notify} from "../../redux/startup";
 
 interface DispatchProps {
-	signUpAsync: (values: signUpCredentials) => void
+	signInUserWithBiometricsAsync: () => void
+	signInUserAsync: (values: authCredentials) => void
+	notify: (message:string, type: string) => void
 }
 
 interface StateProps {
 	authUserType: string
 	authEmail: string
+	authPassword: string
 	isLoading: boolean
 }
 
@@ -177,20 +184,140 @@ const BOTTOM_TEXT_LOGIN: TextStyle = {
 };
 
 class SignIn extends React.Component<NavigationScreenProps & Props> {
+	state={
+		compatible: false,
+		loading: false
+	}
 	
 	emailInput: NativeMethodsMixinStatic | any
 	passwordInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
 	
-	submit = (values: signUpCredentials) => {
-		// this.props.signUpAsync(values)
+	checkDeviceForHardware = async () => {
+		let compatible = await LocalAuthentication.hasHardwareAsync()
+		console.log(compatible)
+		this.setState({ compatible });
+
+		if (!compatible) {
+			this.props.notify('Current device does not have the necessary hardware to use this functionality.', 'danger')
+		} else {
+			this.checkForBiometrics()
+		}
 	}
+	
+	checkForBiometrics = async () => {
+		let biometricRecords = await LocalAuthentication.isEnrolledAsync();
+		if (!biometricRecords) {
+			this.props.notify('Please ensure you have set up biometrics in your OS settings.', 'error' )
+		} else {
+			this.handleLoginPress();
+		}
+	};
+	
+	handleLoginPress = () => {
+		if (Platform.OS === 'android') {
+			this.showAndroidAlert();
+		} else {
+			this.scanBiometrics();
+		}
+	};
+	
+	showAndroidAlert = () => {
+		Alert.alert('Fingerprint Scan', 'Place your finger over the touch sensor.');
+		this.scanBiometrics();
+	};
+	
+	scanBiometrics = async () => {
+		const { signInUserWithBiometricsAsync, notify, authPassword, authEmail } = this.props
+		let result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Biometric Scan.'});
+		if (result.success) {
+			notify('Bio-Authentication succeeded.', 'success')
+			this.setState({ loading: true })
+			
+			firebase.auth().signInWithEmailAndPassword(authEmail, authPassword)
+				.then((user) => {
+					// If you need to do anything with the user, do it here
+					// The user will be logged in automatically by the
+					// `onAuthStateChanged` listener we set up in App.js earlier
+					signInUserWithBiometricsAsync()
+					this.setState({ loading: false })
+				})
+				.catch((error) => {
+					const { code, message } = error;
+					// For details of error codes, see the docs
+					// The message contains the default Firebase string
+					// representation of the error
+					console.tron.log(error)
+					this.setState({ loading: false })
+					notify(`${message}`, 'danger')
+				});
+			
+		} else {
+			notify('Bio-Authentication failed or canceled.', 'danger')
+		}
+	};
+	
+	loginWIthBiometrics = () => {
+		return this.props.authPassword === ""
+			? this.props.notify('No GrapePharm account found, create an account or login.', 'danger')
+			: this.checkDeviceForHardware()
+	}
+	
+	onLogin = (values: { email: string; password: string; }) => {
+		const { email, password } = values;
+		const { signInUserAsync, notify } = this.props;
+		
+		this.setState({ loading: true })
+
+		firebase.auth().signInWithEmailAndPassword(email, password)
+			.then((user) => {
+				// If you need to do anything with the user, do it here
+				// The user will be logged in automatically by the
+				// `onAuthStateChanged` listener we set up in App.js earlier
+				console.tron.log(user)
+				signInUserAsync(values)
+				this.setState({ loading: false })
+			})
+			.catch((error) => {
+				const { code, message } = error;
+				// For details of error codes, see the docs
+				// The message contains the default Firebase string
+				// representation of the error
+				console.tron.log(error)
+				this.setState({ loading: false })
+				notify(`${message}`, 'danger')
+			});
+	}
+	
+	onForgetPassword = async () => {
+		this.setState({ loading: true })
+		
+		const auth = firebase.auth();
+		const emailAddress = this.formik.values.email.toString().trim();
+		console.tron.log(emailAddress.trim())
+		
+
+		try {
+			const result = await auth.sendPasswordResetEmail(emailAddress)
+			console.log(result)
+			this.setState({ loading: false })
+			this.props.notify(`Please check your email...`, 'success')
+			// this.props.notify(`${}`, 'success')
+		} catch (error) {
+			console.tron.log(error)
+			this.setState({ loading: false })
+			this.props.notify(`${error.message}`, 'danger')
+		}
+	}
+	
 	
 	public render(): React.ReactNode {
 		
 		const {
 			navigation, authUserType, authEmail, isLoading
 		} = this.props
+		
+		const { loading } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -265,7 +392,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 										password: "",
 									}}
 									validationSchema={schema}
-									onSubmit={this.submit}
+									onSubmit={this.onLogin}
 									validateOnChange={false}
 									validateOnBlur={false}
 									enableReinitialize
@@ -317,7 +444,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 														this.passwordInput = i
 													}}
 													blurOnSubmit={false}
-													onSubmitEditing={() => this.confirmPasswordInput.focus()}
+													onSubmitEditing={() => Keyboard.dismiss()}
 												/>
 											
 											
@@ -327,7 +454,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 								</Formik>
 								
 								<TouchableOpacity
-									onPress={() => console.tron.log('Forget!')}
+									onPress={() => this.onForgetPassword()}
 								>
 									<Text
 										style={FORGOT_PASSWORD}
@@ -341,16 +468,13 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 									style={BUTTON_VIEW}
 								>
 									<Button
+										loading={isLoading || loading}
 										style={CONTINUE_BUTTON}
 										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading}
+										disabled={isLoading || loading}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										{
-											isLoading
-												? <ActivityIndicator size="small" color={colors.white} />
-												: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.logIn`)}</Text>
-										}
+										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.logIn`)}</Text>
 									</Button>
 								</View>
 							
@@ -360,8 +484,8 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 							<View
 								style={BOTTOM_VIEW}
 							>
-								
 								<TouchableOpacity
+									onPress={() => this.loginWIthBiometrics()}
 									style={{
 										justifyContent: 'space-between',
 										alignSelf: "center"
@@ -392,7 +516,6 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 											navigation.navigate('comSignUp')
 										}
 									}}
-									// onPress={() => navigation.navigate('indSignUp')}
 									style={{
 										flexDirection: "row"
 									}}
@@ -422,13 +545,16 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpAsync: (values: signUpCredentials) => dispatch(signUpIndividualAsync(values)),
+	signInUserWithBiometricsAsync: () => dispatch(signInUserWithBiometricsAsync()),
+	signInUserAsync: (values: authCredentials) => dispatch(signInUserAsync(values)),
+	notify: (message:string, type: string) => dispatch(notify(message, type)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
 mapStateToProps = (state: ApplicationState): StateProps => ({
 	authUserType: state.auth.userType,
 	authEmail: state.auth.email,
+	authPassword: state.auth.password,
 	isLoading: state.auth.loading,
 });
 

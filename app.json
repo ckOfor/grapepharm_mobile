@@ -13,5 +13,10 @@
     "assetBundlePatterns": [
       "**/*"
     ]
+  },
+  "ios": {
+    "infoPlist": {
+      "NSFaceIDUsageDescription": "GrapePharm app uses the bio metrics to login."
+    }
   }
 }

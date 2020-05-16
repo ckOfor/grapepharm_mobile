@@ -155,7 +155,7 @@ export const requestNotificationPermissionAsync = (): ThunkAction<
   }
 };
 
-export const notify = (message, type): ThunkAction<
+export const notify = (message: string, type: string): ThunkAction<
   void,
   ApplicationState,
   null,

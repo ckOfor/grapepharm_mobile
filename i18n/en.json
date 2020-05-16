@@ -53,7 +53,7 @@
     "manufacturer": "Manufacturer"
   },
   "signIn": {
-    "fingerPrint": "Or fingerprint Login",
+    "fingerPrint": "Or fingerprint/faceId Login",
     "signUp": "Don't have an account? "
   }
 }

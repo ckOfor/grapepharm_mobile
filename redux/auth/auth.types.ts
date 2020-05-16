@@ -16,6 +16,12 @@ type SetAuthEmailAction = {
 	payload: string
 };
 
+export const SET_AUTH_PASSWORD = "SET_AUTH_PASSWORD"
+type SetAuthPasswordAction = {
+	type: typeof SET_AUTH_PASSWORD
+	payload: string
+};
+
 export const SET_AUTH_USER_TYPE = "SET_AUTH_USER_TYPE"
 type SetAuthUserTypeAction = {
 	type: typeof SET_AUTH_USER_TYPE
@@ -70,7 +76,6 @@ type SetAuthCompanyNameAction = {
 	payload: string
 };
 
-
 export const SIGN_UP_COMPANY = "SIGN_UP_COMPANY"
 type SignUpCompanyAction = {
 	type: typeof SIGN_UP_COMPANY
@@ -85,6 +90,37 @@ export const SIGN_UP_COMPANY_SUCCESS = "SIGN_UP_COMPANY_SUCCESS"
 type SignUpCompanyActionSuccess = {
 	type: typeof SIGN_UP_COMPANY_SUCCESS
 }
+
+export const SIGN_IN_USER_WITH_BIOMETRICS = "SIGN_IN_USER_WITH_BIOMETRICS"
+type SignInUserWithBiometricsAction = {
+	type: typeof SIGN_IN_USER_WITH_BIOMETRICS
+}
+
+export const SIGN_IN_USER_WITH_BIOMETRICS_FAILURE = "SIGN_IN_USER_WITH_BIOMETRICS_FAILURE"
+type SignInUserWithBiometricsActionFailure = {
+	type: typeof SIGN_IN_USER_WITH_BIOMETRICS_FAILURE
+}
+
+export const SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS = "SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS"
+type SignInUserWithBiometricsActionSuccess = {
+	type: typeof SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS
+}
+
+export const SIGN_IN_USER = "SIGN_IN_USER"
+type SignInUser = {
+	type: typeof SIGN_IN_USER
+}
+
+export const SIGN_IN_USER_FAILURE = "SIGN_IN_USER_FAILURE"
+type SignInUserFailure = {
+	type: typeof SIGN_IN_USER_FAILURE
+}
+
+export const SIGN_IN_USER_SUCCESS = "SIGN_IN_USER_SUCCESS"
+type SignInUserSuccess = {
+	type: typeof SIGN_IN_USER_SUCCESS
+}
+
 
 export type IUser = {
 	id: number
@@ -116,7 +152,7 @@ export type IUser = {
 	approvedBy: string
 }
 
-export type signUpCredentials = {
+export type authCredentials = {
 	fullName?: string
 	companyName?: string
 	email: string
@@ -130,6 +166,7 @@ export type AuthState = {
 	fullName: string
 	companyName: string
 	email: string
+	password: string
 	userType: string
 	notificationId: string
 	loading: boolean
@@ -154,3 +191,10 @@ export type AuthAction =
 	| SignUpCompanyAction
 	| SignUpCompanyActionFailure
 	| SignUpCompanyActionSuccess
+	| SetAuthPasswordAction
+	| SignInUserWithBiometricsAction
+	| SignInUserWithBiometricsActionFailure
+	| SignInUserWithBiometricsActionSuccess
+	| SignInUser
+	| SignInUserFailure
+	| SignInUserSuccess

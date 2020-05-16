@@ -3,7 +3,7 @@ import apisauce from "apisauce"
 import { RN_API_ENDPOINT_BASE } from "react-native-dotenv"
 import * as Types from "./api.types"
 import { getGeneralApiProblem } from "./api-problem"
-import {signUpCredentials} from "../../redux/auth";
+import {authCredentials} from "../../redux/auth";
 
 const api = apisauce.create({
   // base URL is read from the "constructor"
@@ -36,7 +36,7 @@ const processResponse = async (response: any): Promise<any> => {
   return { kind: "ok", data: response.data }
 }
 
-const signUpIndividual = async (values: signUpCredentials): Promise<
+const signUpIndividual = async (values: authCredentials): Promise<
   Types.getResponse
   > => {
   const response = await api.post("/individual/signup", {
@@ -45,7 +45,7 @@ const signUpIndividual = async (values: signUpCredentials): Promise<
   return processResponse(response)
 }
 
-const signUpDoctor = async (values: signUpCredentials): Promise<
+const signUpDoctor = async (values: authCredentials): Promise<
   Types.getResponse
   > => {
   const response = await api.post("/doctor/signup", {
@@ -54,7 +54,7 @@ const signUpDoctor = async (values: signUpCredentials): Promise<
   return processResponse(response)
 }
 
-const signUpCompany = async (values: signUpCredentials): Promise<
+const signUpCompany = async (values: authCredentials): Promise<
   Types.getResponse
   > => {
   const response = await api.post("/company/signup", {
@@ -63,8 +63,18 @@ const signUpCompany = async (values: signUpCredentials): Promise<
   return processResponse(response)
 }
 
+const signInUser = async (values: authCredentials): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post("/signin", {
+    ...values
+  })
+  return processResponse(response)
+}
+
 export {
   signUpIndividual,
   signUpDoctor,
-  signUpCompany
+  signUpCompany,
+  signInUser
 }

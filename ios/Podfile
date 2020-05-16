@@ -39,8 +39,10 @@ target 'grapepharm' do
   # Other native modules
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
   pod 'Firebase/Core'
+  pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
   pod 'Firebase/Messaging'
+  pod 'EXLocalAuthentication', path: '../node_modules/expo-local-authentication/ios'
 
   # Automatically detect installed unimodules
   use_unimodules!

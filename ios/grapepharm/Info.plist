@@ -47,6 +47,8 @@
 	<string>Allow grapepharm to use the camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Allow grapepharm experiences to access your contacts</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>GrapePharm Authentication with TouchId or FaceID</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Allow grapepharm to use your location</string>
 	<key>NSLocationAlwaysUsageDescription</key>

@@ -23,6 +23,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Formik, FormikProps } from "formik";
 import * as Yup from "yup";
+import firebase from 'react-native-firebase';
 
 // redux
 import { ApplicationState } from "../../redux";
@@ -34,11 +35,13 @@ import { translate } from "../../i18n";
 import { Header } from "../../components/header";
 import {TextField} from "../../components/text-field";
 import {Button} from "../../components/button";
-import {signUpIndividualAsync, signUpCredentials} from "../../redux/auth";
+import {signUpIndividualAsync, authCredentials} from "../../redux/auth";
 import {fullNameRegExp} from "../../utils/regexes";
+import {notify} from "../../redux/startup";
 
 interface DispatchProps {
-	signUpAsync: (values: signUpCredentials) => void
+	signUpAsync: (values: authCredentials) => void
+	notify: (message: string, type: string)  => void
 }
 
 interface StateProps {
@@ -213,11 +216,34 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 	formik: NativeMethodsMixinStatic | any;
 	
 	state={
-		termsAndConditions: false
+		termsAndConditions: false,
+		loading: false
 	}
 	
-	submit = (values: signUpCredentials) => {
-		this.props.signUpAsync(values)
+	onRegister = (values: { email: string; password: string; }) => {
+		const { email, password } = values;
+		const { signUpAsync, notify } = this.props;
+		
+		this.setState({ loading: true })
+		
+		firebase.auth().createUserWithEmailAndPassword(email, password)
+			.then((user) => {
+				// If you need to do anything with the user, do it here
+				// The user will be logged in automatically by the
+				// `onAuthStateChanged` listener we set up in App.js earlier
+				console.tron.log(user)
+				signUpAsync(values)
+				this.setState({ loading: false })
+			})
+			.catch((error) => {
+				const { code, message } = error;
+				// For details of error codes, see the docs
+				// The message contains the default Firebase string
+				// representation of the error
+				console.tron.log(error)
+				this.setState({ loading: false })
+				notify(`${message}`, 'danger')
+			});
 	}
 	
 	public render(): React.ReactNode {
@@ -226,7 +252,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 			navigation, authFullName, authEmail, isLoading
 		} = this.props
 		
-		const { termsAndConditions } = this.state
+		const { termsAndConditions, loading } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -303,7 +329,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 										confirmPassword: "",
 									}}
 									validationSchema={schema}
-									onSubmit={this.submit}
+									onSubmit={this.onRegister}
 									validateOnChange={false}
 									validateOnBlur={false}
 									enableReinitialize
@@ -429,16 +455,13 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 									style={BUTTON_VIEW}
 								>
 									<Button
+										loading={isLoading || loading}
 										style={CONTINUE_BUTTON}
 										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading || !termsAndConditions}
+										disabled={isLoading || !termsAndConditions || loading}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										{
-											isLoading
-												? <ActivityIndicator size="small" color={colors.white} />
-												: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-										}
+										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
 									</Button>
 								</View>
 								
@@ -474,7 +497,8 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpAsync: (values: signUpCredentials) => dispatch(signUpIndividualAsync(values)),
+	signUpAsync: (values: authCredentials) => dispatch(signUpIndividualAsync(values)),
+	notify: (message: string, type: string) => dispatch(notify(message, type)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;

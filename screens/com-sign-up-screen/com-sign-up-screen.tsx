@@ -34,10 +34,13 @@ import { translate } from "../../i18n";
 import { Header } from "../../components/header";
 import {TextField} from "../../components/text-field";
 import {Button} from "../../components/button";
-import {signUpIndividualAsync, signUpCredentials, signUpCompanyAsync} from "../../redux/auth";
+import {signUpIndividualAsync, authCredentials, signUpCompanyAsync} from "../../redux/auth";
+import firebase from "react-native-firebase";
+import {notify} from "../../redux/startup";
 
 interface DispatchProps {
-	signUpCompanyAsync: (values: signUpCredentials) => void
+	signUpCompanyAsync: (values: authCredentials) => void
+	notify: (message: string, type: string)  => void
 }
 
 interface StateProps {
@@ -214,15 +217,36 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 		manufacturer: false,
 	}
 	
-	submit = (values: signUpCredentials) => {
+	submit = (values: authCredentials) => {
 		const { manufacturer } = this.state
+		const { signUpCompanyAsync, notify } = this.props;
+		this.setState({ loading: true })
 		
 		const newValues = {
 			...values,
 			companyType: manufacturer ? "manufacturer" : "pharmacy"
 		}
-		// console.tron.log(newValues)
-		this.props.signUpCompanyAsync(newValues)
+		
+		const { email, password } = values;
+		
+		firebase.auth().createUserWithEmailAndPassword(email, password)
+			.then((user) => {
+				// If you need to do anything with the user, do it here
+				// The user will be logged in automatically by the
+				// `onAuthStateChanged` listener we set up in App.js earlier
+				console.tron.log(user)
+				signUpCompanyAsync(newValues)
+				this.setState({ loading: false })
+			})
+			.catch((error) => {
+				const { code, message } = error;
+				// For details of error codes, see the docs
+				// The message contains the default Firebase string
+				// representation of the error
+				console.tron.log(error)
+				this.setState({ loading: false })
+				notify(`${message}`, 'danger')
+			});
 	}
 	
 	public render(): React.ReactNode {
@@ -231,7 +255,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 			navigation, authCompanyName, authEmail, isLoading
 		} = this.props
 		
-		const { pharmacy, manufacturer } = this.state
+		const { pharmacy, manufacturer, loading } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -461,15 +485,12 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 								>
 									<Button
 										style={CONTINUE_BUTTON}
+										loading={isLoading || loading}
 										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading}
+										disabled={isLoading || loading}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										{
-											isLoading
-												? <ActivityIndicator size="small" color={colors.white} />
-												: <Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-										}
+										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
 									</Button>
 								</View>
 							
@@ -505,7 +526,8 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpCompanyAsync: (values: signUpCredentials) => dispatch(signUpCompanyAsync(values)),
+	signUpCompanyAsync: (values: authCredentials) => dispatch(signUpCompanyAsync(values)),
+	notify: (message: string, type: string) => dispatch(notify(message, type)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
