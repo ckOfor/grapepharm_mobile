@@ -222,11 +222,6 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 		const { signUpCompanyAsync, notify } = this.props;
 		this.setState({ loading: true })
 		
-		const newValues = {
-			...values,
-			companyType: manufacturer ? "manufacturer" : "pharmacy"
-		}
-		
 		const { email, password } = values;
 		
 		firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -234,6 +229,11 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 				// If you need to do anything with the user, do it here
 				// The user will be logged in automatically by the
 				// `onAuthStateChanged` listener we set up in App.js earlier
+				const newValues = {
+					...values,
+					companyType: manufacturer ? "manufacturer" : "pharmacy",
+					password: user.user.uid
+				}
 				console.tron.log(user)
 				signUpCompanyAsync(newValues)
 				this.setState({ loading: false })

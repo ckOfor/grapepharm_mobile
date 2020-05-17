@@ -1,5 +1,5 @@
 // third-parties
-import firebase from 'react-native-firebase';
+import firebase from "react-native-firebase";
 import { ThunkAction } from "redux-thunk"
 import { Action } from "redux"
 
@@ -37,6 +37,7 @@ import {
 	signUpCompany as apiSignUpCompany,
 	signInUser as apiSignInUser,
 } from "../../services/api"
+import {NavigationActions} from "react-navigation";
 
 export const setFCMToken = (payload: string) => ({
 	type: SET_FCM_TOKEN,
@@ -104,8 +105,9 @@ export const signUpIndividualAsync = (values: authCredentials): ThunkAction<void
 		
 		if (status) {
 			dispatch(notify(`${message}`, 'success'))
-			dispatch(signUpIndividualSuccess())
+			// dispatch(signUpIndividualSuccess())
 			dispatch(setUserDetails(data))
+			dispatch(sendEmailVerificationAsync(email))
 		} else {
 			dispatch(notify(`${message}`, 'danger'))
 			dispatch(signUpIndividualFailure())
@@ -155,9 +157,10 @@ export const signUpDoctorAsync = (values: authCredentials): ThunkAction<void, Ap
 		const { status, message, data } = result.data
 		
 		if (status) {
-			dispatch(notify(`${message}`, 'success'))
+			// dispatch(notify(`${message}`, 'success'))
 			dispatch(signUpDoctorSuccess())
 			dispatch(setUserDetails(data))
+			dispatch(sendEmailVerificationAsync(email))
 		} else {
 			dispatch(notify(`${message}`, 'danger'))
 			dispatch(signUpDoctorFailure())
@@ -201,9 +204,10 @@ export const signUpCompanyAsync = (values: authCredentials): ThunkAction<void, A
 		const { status, message, data } = result.data
 		
 		if (status) {
-			dispatch(notify(`${message}`, 'success'))
+			// dispatch(notify(`${message}`, 'success'))
 			dispatch(signUpCompanySuccess())
 			dispatch(setUserDetails(data))
+			dispatch(sendEmailVerificationAsync(email))
 		} else {
 			dispatch(notify(`${message}`, 'danger'))
 			dispatch(signUpCompanyFailure())
@@ -296,6 +300,31 @@ export const signInUserAsync = (values: authCredentials): ThunkAction<void, Appl
 		}
 	} catch ({ message }) {
 		dispatch(signInUserFailure())
+		dispatch(notify(`${message}`, 'danger'))
+	}
+}
+
+
+export const sendEmailVerificationAsync = (email: string): ThunkAction<void, ApplicationState, null, Action<any>> => async (dispatch, getState) => {
+	
+	console.tron.log(email)
+	
+	try {
+		// @ts-ignore
+		firebase.auth()
+			.currentUser
+			.sendEmailVerification()
+			.then((success) => {
+				console.tron.log(success)
+				dispatch(notify(`We have sent a verification link to ${email}`, 'success'))
+				dispatch(NavigationActions.navigate({ routeName: 'signIn'  }))
+			})
+			.catch(error =>{
+				console.tron.log(error)
+				dispatch(notify(`${error.message}`, 'danger'))
+			})
+	} catch ({message}) {
+		console.tron.log(message)
 		dispatch(notify(`${message}`, 'danger'))
 	}
 }

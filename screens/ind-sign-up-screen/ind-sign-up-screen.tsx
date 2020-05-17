@@ -232,7 +232,11 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 				// The user will be logged in automatically by the
 				// `onAuthStateChanged` listener we set up in App.js earlier
 				console.tron.log(user)
-				signUpAsync(values)
+				const newValues = {
+					...values,
+					password: user.user.uid
+				}
+				signUpAsync(newValues)
 				this.setState({ loading: false })
 			})
 			.catch((error) => {
@@ -245,6 +249,8 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 				notify(`${message}`, 'danger')
 			});
 	}
+	
+	
 	
 	public render(): React.ReactNode {
 		

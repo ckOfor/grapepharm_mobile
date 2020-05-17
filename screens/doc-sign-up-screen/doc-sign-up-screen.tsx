@@ -212,7 +212,11 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 				// The user will be logged in automatically by the
 				// `onAuthStateChanged` listener we set up in App.js earlier
 				console.tron.log(user)
-				signUpDoctorAsync(values)
+				const newValues = {
+					...values,
+					password: user.user.uid
+				}
+				signUpDoctorAsync(newValues)
 				this.setState({ loading: false })
 			})
 			.catch((error) => {

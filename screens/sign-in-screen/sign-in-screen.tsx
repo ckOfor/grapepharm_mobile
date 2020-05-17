@@ -37,12 +37,18 @@ import { translate } from "../../i18n";
 import { Header } from "../../components/header";
 import { TextField } from "../../components/text-field";
 import { Button } from "../../components/button";
-import {authCredentials, signInUserWithBiometricsAsync, signInUserAsync} from "../../redux/auth";
+import {
+	authCredentials,
+	signInUserWithBiometricsAsync,
+	signInUserAsync,
+	sendEmailVerificationAsync
+} from "../../redux/auth";
 import {notify} from "../../redux/startup";
 
 interface DispatchProps {
 	signInUserWithBiometricsAsync: () => void
 	signInUserAsync: (values: authCredentials) => void
+	sendEmailVerificationAsync: (email: string) => void
 	notify: (message:string, type: string) => void
 }
 
@@ -228,7 +234,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 	};
 	
 	scanBiometrics = async () => {
-		const { signInUserWithBiometricsAsync, notify, authPassword, authEmail } = this.props
+		const { signInUserWithBiometricsAsync, notify, authPassword, authEmail, sendEmailVerificationAsync } = this.props
 		let result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Biometric Scan.'});
 		if (result.success) {
 			notify('Bio-Authentication succeeded.', 'success')
@@ -239,8 +245,10 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 					// If you need to do anything with the user, do it here
 					// The user will be logged in automatically by the
 					// `onAuthStateChanged` listener we set up in App.js earlier
-					signInUserWithBiometricsAsync()
+					// signInUserWithBiometricsAsync()
 					this.setState({ loading: false })
+					
+					return user.user.emailVerified ? signInUserWithBiometricsAsync() : sendEmailVerificationAsync(authEmail)
 				})
 				.catch((error) => {
 					const { code, message } = error;
@@ -265,7 +273,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 	
 	onLogin = (values: { email: string; password: string; }) => {
 		const { email, password } = values;
-		const { signInUserAsync, notify } = this.props;
+		const { signInUserAsync, notify, sendEmailVerificationAsync } = this.props;
 		
 		this.setState({ loading: true })
 
@@ -275,8 +283,13 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 				// The user will be logged in automatically by the
 				// `onAuthStateChanged` listener we set up in App.js earlier
 				console.tron.log(user)
-				signInUserAsync(values)
+				const newValues = {
+					...values,
+					password: user.user.uid
+				}
 				this.setState({ loading: false })
+				
+				return user.user.emailVerified ? signInUserAsync(newValues) : sendEmailVerificationAsync(email)
 			})
 			.catch((error) => {
 				const { code, message } = error;
@@ -547,6 +560,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
 	signInUserWithBiometricsAsync: () => dispatch(signInUserWithBiometricsAsync()),
 	signInUserAsync: (values: authCredentials) => dispatch(signInUserAsync(values)),
+	sendEmailVerificationAsync: (email: string) => dispatch(sendEmailVerificationAsync(email)),
 	notify: (message:string, type: string) => dispatch(notify(message, type)),
 });
 
