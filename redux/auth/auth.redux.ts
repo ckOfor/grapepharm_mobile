@@ -1,6 +1,12 @@
 import {
 	AuthAction,
 	AuthState,
+	EDIT_PASSWORD,
+	EDIT_PASSWORD_FAILURE,
+	EDIT_PASSWORD_SUCCESS,
+	FORGOT_PASSWORD,
+	FORGOT_PASSWORD_FAILURE,
+	FORGOT_PASSWORD_SUCCESS,
 	SET_AUTH_COMPANY_NAME,
 	SET_AUTH_EMAIL,
 	SET_AUTH_FOLIO_NUMBER,
@@ -8,7 +14,8 @@ import {
 	SET_AUTH_PASSWORD,
 	SET_AUTH_USER_TYPE,
 	SET_FCM_TOKEN,
-	SET_USER_DETAILS, SIGN_IN_USER,
+	SET_USER_DETAILS,
+	SIGN_IN_USER,
 	SIGN_IN_USER_FAILURE,
 	SIGN_IN_USER_SUCCESS,
 	SIGN_IN_USER_WITH_BIOMETRICS,
@@ -42,7 +49,7 @@ export function authReducer(
 	action: AuthAction
 ): AuthState {
 	switch (action.type) {
-		
+
 		case SET_AUTH_FULL_NAME:
 			return {
 				...state,
@@ -72,6 +79,8 @@ export function authReducer(
 		case SIGN_UP_COMPANY:
 		case SIGN_IN_USER_WITH_BIOMETRICS:
 		case SIGN_IN_USER:
+		case FORGOT_PASSWORD:
+		case EDIT_PASSWORD:
 			return {
 				...state,
 				loading: true
@@ -87,6 +96,10 @@ export function authReducer(
 		case SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS:
 		case SIGN_IN_USER_FAILURE:
 		case SIGN_IN_USER_SUCCESS:
+		case FORGOT_PASSWORD_FAILURE:
+		case FORGOT_PASSWORD_SUCCESS:
+		case EDIT_PASSWORD_FAILURE:
+		case EDIT_PASSWORD_SUCCESS:
 			return {
 				...state,
 				loading: false

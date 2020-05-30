@@ -43,6 +43,8 @@ target 'grapepharm' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Messaging'
   pod 'EXLocalAuthentication', path: '../node_modules/expo-local-authentication/ios'
+	pod 'FBSDKLoginKit'
+	pod 'GoogleSignIn', '~> 5.0.2'
 
   # Automatically detect installed unimodules
   use_unimodules!

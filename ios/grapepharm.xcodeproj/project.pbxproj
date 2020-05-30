@@ -14,9 +14,11 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7B0C5784998A29E517983E0C /* libPods-grapepharm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2502ACF51380E8237829647D /* libPods-grapepharm.a */; };
+		F75C20AC24734CD900789228 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F75C20AB24734CD900789228 /* LaunchScreen.storyboard */; };
+		F765CEF424829390009ACDB2 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = F765CEF324829390009ACDB2 /* File.swift */; };
+		F765CEFA2482DD0F009ACDB2 /* client_273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com.plist in Resources */ = {isa = PBXBuildFile; fileRef = F765CEF82482DD0F009ACDB2 /* client_273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com.plist */; };
 		F77D1C9A2464CF520028A34A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F77D1C992464CF520028A34A /* GoogleService-Info.plist */; };
 		F77D1C9C2465B3150028A34A /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F77D1C9B2465B3140028A34A /* UserNotifications.framework */; };
-		F7C8CE832461D2DC0065580B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F7C8CE822461D2DC0065580B /* LaunchScreen.xib */; };
 		F7DBA220245E4BCD00035371 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */; };
 		F7DBA221245E4BCD00035371 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */; };
 		F7DBA222245E4BCD00035371 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */; };
@@ -55,6 +57,10 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F70410452467665B00784681 /* libEXLocalAuthentication.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libEXLocalAuthentication.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F74615F024660BE700F7253F /* grapepharm.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = grapepharm.entitlements; path = grapepharm/grapepharm.entitlements; sourceTree = "<group>"; };
+		F75C20AB24734CD900789228 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F765CEF22482938F009ACDB2 /* grapepharm-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "grapepharm-Bridging-Header.h"; sourceTree = "<group>"; };
+		F765CEF324829390009ACDB2 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		F765CEF82482DD0F009ACDB2 /* client_273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "client_273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com.plist"; sourceTree = "<group>"; };
 		F77D1C992464CF520028A34A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F77D1C9B2465B3140028A34A /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		F77D1C9D2465B32A0028A34A /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFirebase.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,7 +68,6 @@
 		F788AFA12466B53F00BDC1DE /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFirebase.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F788AFA32466B57700BDC1DE /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		F788AFAB2466BE2600BDC1DE /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFirebase.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		F7C8CE822461D2DC0065580B /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Light.ttf"; path = "../assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
 		F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
@@ -91,9 +96,9 @@
 		13B07FAE1A68108700A75B9A /* grapepharm */ = {
 			isa = PBXGroup;
 			children = (
+				F765CEF82482DD0F009ACDB2 /* client_273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com.plist */,
 				F74615F024660BE700F7253F /* grapepharm.entitlements */,
 				F77D1C992464CF520028A34A /* GoogleService-Info.plist */,
-				F7C8CE822461D2DC0065580B /* LaunchScreen.xib */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -103,6 +108,9 @@
 				0731D3BB24204D9B009CAE85 /* Expo.plist */,
 				07287ACD2432831900C893F0 /* app.bundle */,
 				07287ACC2432831900C893F0 /* app.manifest */,
+				F75C20AB24734CD900789228 /* LaunchScreen.storyboard */,
+				F765CEF324829390009ACDB2 /* File.swift */,
+				F765CEF22482938F009ACDB2 /* grapepharm-Bridging-Header.h */,
 			);
 			name = grapepharm;
 			sourceTree = "<group>";
@@ -214,6 +222,7 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 9LTMQ2LQXZ;
+						LastSwiftMigration = 1140;
 					};
 				};
 			};
@@ -257,7 +266,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F7C8CE832461D2DC0065580B /* LaunchScreen.xib in Resources */,
 				F7DBA220245E4BCD00035371 /* Poppins-Light.ttf in Resources */,
 				F7DBA221245E4BCD00035371 /* Poppins-Regular.ttf in Resources */,
 				F7DBA222245E4BCD00035371 /* Poppins-Medium.ttf in Resources */,
@@ -267,6 +275,8 @@
 				074F4BDF2432834300BDB9FE /* app.manifest in Resources */,
 				F77D1C9A2464CF520028A34A /* GoogleService-Info.plist in Resources */,
 				0731D3BE24204D9B009CAE85 /* Expo.plist in Resources */,
+				F765CEFA2482DD0F009ACDB2 /* client_273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com.plist in Resources */,
+				F75C20AC24734CD900789228 /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -317,10 +327,14 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-grapepharm/Pods-grapepharm-resources.sh",
+				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				F765CEF424829390009ACDB2 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -367,8 +382,9 @@
 			baseConfigurationReference = 056F63395CAC2B8C2DC048FE /* Pods-grapepharm.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = grapepharm/grapepharm.entitlements;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 17;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				HEADER_SEARCH_PATHS = (
@@ -458,6 +474,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.grapepharm;
 				PRODUCT_NAME = grapepharm;
+				SWIFT_OBJC_BRIDGING_HEADER = "grapepharm-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -467,8 +486,9 @@
 			baseConfigurationReference = E40B1F720DE0D29BF6B90074 /* Pods-grapepharm.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = grapepharm/grapepharm.entitlements;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -557,6 +577,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.grapepharm;
 				PRODUCT_NAME = grapepharm;
+				SWIFT_OBJC_BRIDGING_HEADER = "grapepharm-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

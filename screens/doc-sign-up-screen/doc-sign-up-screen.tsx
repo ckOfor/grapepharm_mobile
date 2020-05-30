@@ -13,7 +13,7 @@ import {
 	TextStyle,
 	TouchableOpacity,
 	KeyboardAvoidingView,
-	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView
+	NativeMethodsMixinStatic, Keyboard, ScrollView
 } from "react-native";
 
 // third-party
@@ -36,13 +36,11 @@ import { TextField } from "../../components/text-field";
 import { Button } from "../../components/button";
 
 // utils
-import {folioNumberRegExp, fullNameRegExp} from "../../utils/regexes";
-import firebase from "react-native-firebase";
-import {notify} from "../../redux/startup";
+import { folioNumberRegExp, fullNameRegExp } from "../../utils/regexes";
+import {formatFolioNumber} from "../../utils/formatters";
 
 interface DispatchProps {
 	signUpDoctorAsync: (values: authCredentials) => void
-	notify: (message:string, type: string) => void
 }
 
 interface StateProps {
@@ -70,7 +68,6 @@ const schema = Yup.object().shape({
 		.matches(fullNameRegExp, "common.fullNameError")
 		.required("common.fullNameError"),
 	folioNumber: Yup.string()
-		.min(5, "common.folioNumberTooShortError")
 		.matches(folioNumberRegExp, "common.folioNumberInvalid")
 		.required("common.folioNumberError"),
 	email: Yup.string()
@@ -85,7 +82,6 @@ const schema = Yup.object().shape({
 })
 
 const ROOT: ViewStyle = {
-	// height: '100%',
 	alignItems: 'center',
 };
 
@@ -200,34 +196,11 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 		loading: false
 	}
 	
-	onRegister = (values: { email: string; password: string; }) => {
-		const { email, password } = values;
-		const { signUpDoctorAsync, notify } = this.props;
-		
-		this.setState({ loading: true })
-		
-		firebase.auth().createUserWithEmailAndPassword(email, password)
-			.then((user) => {
-				// If you need to do anything with the user, do it here
-				// The user will be logged in automatically by the
-				// `onAuthStateChanged` listener we set up in App.js earlier
-				console.tron.log(user)
-				const newValues = {
-					...values,
-					password: user.user.uid
-				}
-				signUpDoctorAsync(newValues)
-				this.setState({ loading: false })
-			})
-			.catch((error) => {
-				const { code, message } = error;
-				// For details of error codes, see the docs
-				// The message contains the default Firebase string
-				// representation of the error
-				console.tron.log(error)
-				this.setState({ loading: false })
-				notify(`${message}`, 'danger')
-			});
+	onEmailRegister = (values: authCredentials) => {
+		this.props.signUpDoctorAsync({
+			...values,
+			authType: 'email'
+		})
 	}
 	
 	public render(): React.ReactNode {
@@ -315,7 +288,7 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 										folioNumber: authFolioNumber,
 									}}
 									validationSchema={schema}
-									onSubmit={this.onRegister}
+									onSubmit={this.onEmailRegister}
 									validateOnChange={false}
 									validateOnBlur={false}
 									enableReinitialize
@@ -408,7 +381,7 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 													name="folioNumber"
 													keyboardType="default"
 													placeholderTx="common.folioNumberPlaceHolder"
-													value={values.folioNumber}
+													value={formatFolioNumber(values.folioNumber)}
 													onChangeText={handleChange("folioNumber")}
 													onBlur={handleBlur("folioNumber")}
 													autoCapitalize="none"
@@ -475,8 +448,7 @@ class DocSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpDoctorAsync: (values: authCredentials) => dispatch(signUpDoctorAsync(values)),
-	notify: (message:string, type: string) => dispatch(notify(message, type)),
+	signUpDoctorAsync: (values: authCredentials) => dispatch(signUpDoctorAsync(values))
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;

@@ -14,7 +14,7 @@ import {
 	Image,
 	TouchableOpacity,
 	KeyboardAvoidingView,
-	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView
+	NativeMethodsMixinStatic, Keyboard, ScrollView
 } from "react-native";
 
 // third-party
@@ -23,29 +23,35 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Formik, FormikProps } from "formik";
 import * as Yup from "yup";
-import firebase from 'react-native-firebase';
+import { GoogleSignin } from '@react-native-community/google-signin';
 
 // redux
 import { ApplicationState } from "../../redux";
+import { signUpIndividualAsync, authCredentials, signInUserAsync } from "../../redux/auth";
 
 // styles
 import { Layout } from "../../constants";
 import { colors, fonts, images } from "../../theme";
 import { translate } from "../../i18n";
 import { Header } from "../../components/header";
-import {TextField} from "../../components/text-field";
-import {Button} from "../../components/button";
-import {signUpIndividualAsync, authCredentials} from "../../redux/auth";
-import {fullNameRegExp} from "../../utils/regexes";
+import { TextField } from "../../components/text-field";
+import { Button } from "../../components/button";
+
+// Utils
+import { fullNameRegExp } from "../../utils/regexes";
+import { AccessToken, LoginManager } from "react-native-fbsdk";
+import firebase from "react-native-firebase";
 import {notify} from "../../redux/startup";
 
 interface DispatchProps {
-	signUpAsync: (values: authCredentials) => void
-	notify: (message: string, type: string)  => void
+	signUpIndividualAsync: (values: authCredentials) => void
+	signInUserAsync: (values: authCredentials) => void
+	notify: (message:string, type: string) => void
 }
 
 interface StateProps {
 	authFullName: string
+	authUserType: string
 	authEmail: string
 	isLoading: boolean
 }
@@ -195,6 +201,42 @@ const CONTINUE_BUTTON: ViewStyle = {
 	backgroundColor: colors.companyGreenTwo
 }
 
+
+const SOCIAL_VIEW: ViewStyle = {
+	margin: 30,
+	flexDirection: 'row',
+	alignSelf: 'center',
+	justifyContent: "space-around",
+	width: '50%'
+};
+
+const FORGOT_PASSWORD: TextStyle = {
+	color: colors.companyGreenTwo,
+	fontSize: 12,
+	fontFamily: fonts.PoppinsRegular,
+	marginRight: 30,
+	alignSelf: "flex-end"
+};
+
+const SOCIAL_TEXT: TextStyle = {
+	...FORGOT_PASSWORD,
+	// color: colors.socialText,
+	fontSize: 16,
+	marginTop: 5
+};
+
+const SOCIAL_ICON: ImageStyle = {
+	width: 35,
+	height: 35,
+};
+
+const OR: TextStyle = {
+	color: colors.companyGreen,
+	fontSize: 16,
+	marginTop: 10,
+};
+
+
 const CONTINUE_BUTTON_TEXT: TextStyle = {
 	fontSize: 14,
 	fontFamily: fonts.PoppinsSemiBold,
@@ -220,42 +262,112 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 		loading: false
 	}
 	
-	onRegister = (values: { email: string; password: string; }) => {
-		const { email, password } = values;
-		const { signUpAsync, notify } = this.props;
-		
+	componentDidMount() {
+		GoogleSignin.configure({
+			// scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+			webClientId: '273507072258-d7qp1o9m701j9gi0unfv47a6e9q0ocve.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+			offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+			hostedDomain: '', // specifies a hosted domain restriction
+			loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
+			forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+			accountName: '', // [Android] specifies an account name on the device that should be used
+			// iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+		});
+	}
+	
+	onEmailRegister = (values: authCredentials) => {
+		this.props.signUpIndividualAsync({
+			...values,
+			authType: 'email'
+		})
+	}
+	
+	onFacebookLoginOrRegister = () => {
+		const { notify, signInUserAsync } = this.props
 		this.setState({ loading: true })
-		
-		firebase.auth().createUserWithEmailAndPassword(email, password)
+		LoginManager.logInWithPermissions(['public_profile', 'email'])
+			.then((result) => {
+				if (result.isCancelled) {
+					return Promise.reject(new Error('The user cancelled the request'));
+				}
+				// Retrieve the access token
+				return AccessToken.getCurrentAccessToken();
+			})
+			.then((data) => {
+				// Create a new Firebase credential with the token
+				const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+				// Login with the credential
+				return firebase.auth().signInWithCredential(credential);
+			})
 			.then((user) => {
+				this.setState({ loading: false })
+				// If you need to do anything with the user, do it here
+				// The user will be logged in automatically by the
+				// `onAuthStateChanged` listener we set up in App.js earlier
+				// console.tron.log(user)
+				const userInformation = {
+					password: user.user.uid,
+					email: user.user.email,
+					fullName: user.user.displayName,
+					authType: 'facebook'
+				}
+				// @ts-ignore
+				signInUserAsync(userInformation)
+			})
+			.catch((error) => {
+				this.setState({ loading: false })
+				const { code, message } = error;
+				notify(message, 'danger')
+				// For details of error codes, see the docs
+				// The message contains the default Firebase string
+				// representation of the error
+			});
+	}
+	
+	onGoogleLoginOrRegister = () => {
+		const { notify, signInUserAsync } = this.props
+		this.setState({ googleLoading: true })
+		console.tron.log('kkkkk')
+		GoogleSignin.signIn()
+			.then((data) => {
+				// Create a new Firebase credential with the token
+				const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
+				// Login with the credential
+				return firebase.auth().signInWithCredential(credential);
+			})
+			.then((user) => {
+				// setAuthPassword(user.user.uid)
 				// If you need to do anything with the user, do it here
 				// The user will be logged in automatically by the
 				// `onAuthStateChanged` listener we set up in App.js earlier
 				console.tron.log(user)
-				const newValues = {
-					...values,
-					password: user.user.uid
+				const userInformation = {
+					password: user.user.uid,
+					email: user.user.email,
+					fullName: user.user.displayName,
+					authType: 'facebook'
 				}
-				signUpAsync(newValues)
-				this.setState({ loading: false })
+				// @ts-ignore
+				signInUserAsync(userInformation)
+				this.setState({ googleLoading: false })
 			})
 			.catch((error) => {
+				console.tron.log(error)
 				const { code, message } = error;
+				console.log(message)
+				console.log(code)
+				notify(`${message}`, 'danger')
 				// For details of error codes, see the docs
 				// The message contains the default Firebase string
 				// representation of the error
-				console.tron.log(error)
-				this.setState({ loading: false })
-				notify(`${message}`, 'danger')
+				// this.setState({ googleLoading: false })
 			});
 	}
-	
-	
 	
 	public render(): React.ReactNode {
 		
 		const {
-			navigation, authFullName, authEmail, isLoading
+			navigation, authFullName, authEmail, isLoading, authUserType
 		} = this.props
 		
 		const { termsAndConditions, loading } = this.state
@@ -335,7 +447,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 										confirmPassword: "",
 									}}
 									validationSchema={schema}
-									onSubmit={this.onRegister}
+									onSubmit={this.onEmailRegister}
 									validateOnChange={false}
 									validateOnBlur={false}
 									enableReinitialize
@@ -425,8 +537,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 														Keyboard.dismiss()
 													}}
 												/>
-												
-												
+
 											</View>
 										</View>
 									)}
@@ -474,6 +585,52 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 							
 							</View>
 							
+							{
+								authUserType === "Individual" && (
+									<View
+										style={SOCIAL_VIEW}
+									>
+										<Text
+											style={SOCIAL_TEXT}
+										>
+											{translate(`signIn.continue`)}
+										</Text>
+										
+										<View
+											style={{
+												flexDirection: "row",
+											}}
+										>
+											<TouchableOpacity
+												disabled={isLoading || loading || !termsAndConditions}
+												onPress={this.onFacebookLoginOrRegister}
+											>
+												<Image
+													source={images.facebookIcon}
+													style={[SOCIAL_ICON, { marginRight: 10 }]}
+												/>
+											</TouchableOpacity>
+											
+											<Text
+												style={[OR, { marginRight: 10 }]}
+											>
+												{translate(`signIn.or`)}
+											</Text>
+											
+											<TouchableOpacity
+												disabled={isLoading || loading || !termsAndConditions}
+												onPress={this.onGoogleLoginOrRegister}
+											>
+												<Image
+													source={images.googleIcon}
+													style={SOCIAL_ICON}
+												/>
+											</TouchableOpacity>
+										</View>
+									</View>
+								)
+							}
+							
 							<TouchableOpacity
 								onPress={() => navigation.navigate('signIn')}
 								style={BOTTOM_VIEW}
@@ -503,13 +660,15 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpAsync: (values: authCredentials) => dispatch(signUpIndividualAsync(values)),
-	notify: (message: string, type: string) => dispatch(notify(message, type)),
+	signUpIndividualAsync: (values: authCredentials) => dispatch(signUpIndividualAsync(values)),
+	signInUserAsync: (values: authCredentials) => dispatch(signInUserAsync(values)),
+	notify: (message:string, type: string) => dispatch(notify(message, type)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
 mapStateToProps = (state: ApplicationState): StateProps => ({
 	authFullName: state.auth.fullName,
+	authUserType: state.auth.userType,
 	authEmail: state.auth.email,
 	isLoading: state.auth.loading,
 });

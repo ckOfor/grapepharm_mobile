@@ -14,6 +14,28 @@ export const formatPhoneNumber = (phoneNumberString: string) => {
   return phoneNumberString
 }
 
+export const formatFolioNumber = (folioNumberString: string) => {
+  //normalize string and remove all unnecessary characters
+  folioNumberString = ("" + folioNumberString).replace(/[^\d]/g, "")
+
+  return folioNumberString
+}
+
+export const formatResetPasswordCode = (code: string) => {
+  //remove all whitespaces
+  code = ("" + code).trim()
+  
+  //check if number length is at least 10, if longer strip off the end characters
+  if (code.length >= 7) {
+    //reformat and return US phone number
+    return code
+      .substring(0, 6)
+  }
+  
+  //let them keep typing in their phone number
+  return code
+}
+
 export const formatUserName = (userNameString: string) => {
   //normalize string and remove all unnecessary characters
   userNameString = ("" + userNameString).replace("@", "").trim()

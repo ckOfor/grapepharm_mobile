@@ -24,8 +24,10 @@ import { Dispatch } from "redux";
 import { Formik, FormikProps } from "formik";
 import * as Yup from "yup";
 import * as LocalAuthentication from 'expo-local-authentication';
-import Expo from 'expo'
-import firebase from 'react-native-firebase';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { GoogleSignin } from '@react-native-community/google-signin';
+import firebase from "react-native-firebase";
+
 
 // redux
 import { ApplicationState } from "../../redux";
@@ -41,15 +43,15 @@ import {
 	authCredentials,
 	signInUserWithBiometricsAsync,
 	signInUserAsync,
-	sendEmailVerificationAsync
+	forgotPasswordAsync
 } from "../../redux/auth";
 import {notify} from "../../redux/startup";
 
 interface DispatchProps {
 	signInUserWithBiometricsAsync: () => void
 	signInUserAsync: (values: authCredentials) => void
-	sendEmailVerificationAsync: (email: string) => void
 	notify: (message:string, type: string) => void
+	forgotPasswordAsync: (email: string) => void
 }
 
 interface StateProps {
@@ -142,14 +144,14 @@ const CHANGE_TEXT: TextStyle = {
 const BOTTOM_VIEW: ViewStyle = {
 	flexDirection: 'column',
 	justifyContent: 'space-between',
-	margin: 50,
 	height: Layout.window.height / 5
 }
 
 const BOTTOM_TEXT: TextStyle = {
 	color: colors.darkPurple,
 	fontSize: 13,
-	fontFamily: fonts.PoppinsLight
+	fontFamily: fonts.PoppinsLight,
+	marginBottom: 10
 };
 
 const FIELD: ViewStyle = {
@@ -168,6 +170,32 @@ const FORGOT_PASSWORD: TextStyle = {
 const BUTTON_VIEW: ViewStyle = {
 	margin: 40
 }
+
+const SOCIAL_VIEW: ViewStyle = {
+	margin: 30,
+	flexDirection: 'row',
+	alignSelf: 'center',
+	justifyContent: "space-around",
+	width: '50%'
+};
+
+const SOCIAL_TEXT: TextStyle = {
+	...FORGOT_PASSWORD,
+	// color: colors.socialText,
+	fontSize: 16,
+	marginTop: 5
+};
+
+const SOCIAL_ICON: ImageStyle = {
+	width: 35,
+	height: 35,
+};
+
+const OR: TextStyle = {
+	color: colors.companyGreen,
+	fontSize: 16,
+	marginTop: 10,
+};
 
 const CONTINUE_BUTTON: ViewStyle = {
 	alignSelf: "center",
@@ -234,32 +262,11 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 	};
 	
 	scanBiometrics = async () => {
-		const { signInUserWithBiometricsAsync, notify, authPassword, authEmail, sendEmailVerificationAsync } = this.props
+		const { signInUserWithBiometricsAsync, notify } = this.props
 		let result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Biometric Scan.'});
 		if (result.success) {
 			notify('Bio-Authentication succeeded.', 'success')
-			this.setState({ loading: true })
-			
-			firebase.auth().signInWithEmailAndPassword(authEmail, authPassword)
-				.then((user) => {
-					// If you need to do anything with the user, do it here
-					// The user will be logged in automatically by the
-					// `onAuthStateChanged` listener we set up in App.js earlier
-					// signInUserWithBiometricsAsync()
-					this.setState({ loading: false })
-					
-					return user.user.emailVerified ? signInUserWithBiometricsAsync() : sendEmailVerificationAsync(authEmail)
-				})
-				.catch((error) => {
-					const { code, message } = error;
-					// For details of error codes, see the docs
-					// The message contains the default Firebase string
-					// representation of the error
-					console.tron.log(error)
-					this.setState({ loading: false })
-					notify(`${message}`, 'danger')
-				});
-			
+			signInUserWithBiometricsAsync()
 		} else {
 			notify('Bio-Authentication failed or canceled.', 'danger')
 		}
@@ -271,58 +278,96 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 			: this.checkDeviceForHardware()
 	}
 	
-	onLogin = (values: { email: string; password: string; }) => {
-		const { email, password } = values;
-		const { signInUserAsync, notify, sendEmailVerificationAsync } = this.props;
-		
+	onLogin = (values: authCredentials) => {
+		const { signInUserAsync } = this.props;
+		signInUserAsync(values)
+	}
+	
+	onForgetPassword = async () => {
+		this.props.forgotPasswordAsync(this.formik.values.email)
+	}
+	
+	onFacebookLoginOrRegister = () => {
+		const { notify, signInUserAsync } = this.props
 		this.setState({ loading: true })
-
-		firebase.auth().signInWithEmailAndPassword(email, password)
+		LoginManager.logInWithPermissions(['public_profile', 'email'])
+			.then((result) => {
+				if (result.isCancelled) {
+					return Promise.reject(new Error('The user cancelled the request'));
+				}
+				// Retrieve the access token
+				return AccessToken.getCurrentAccessToken();
+			})
+			.then((data) => {
+				// Create a new Firebase credential with the token
+				const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+				// Login with the credential
+				return firebase.auth().signInWithCredential(credential);
+			})
 			.then((user) => {
+				this.setState({ loading: false })
+				// If you need to do anything with the user, do it here
+				// The user will be logged in automatically by the
+				// `onAuthStateChanged` listener we set up in App.js earlier
+				// console.tron.log(user)
+				const userInformation = {
+					password: user.user.uid,
+					fullName: user.user.displayName,
+					email: user.user.email,
+					authType: 'facebook'
+				}
+				// @ts-ignore
+				signInUserAsync(userInformation)
+			})
+			.catch((error) => {
+				this.setState({ loading: false })
+				const { code, message } = error;
+				notify(message, 'danger')
+				// For details of error codes, see the docs
+				// The message contains the default Firebase string
+				// representation of the error
+			});
+	}
+	
+	onGoogleLoginOrRegister = () => {
+		const { notify, signInUserAsync } = this.props
+		this.setState({ googleLoading: true })
+		console.tron.log('kkkkk')
+		GoogleSignin.signIn()
+			.then((data) => {
+				// Create a new Firebase credential with the token
+				const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
+				// Login with the credential
+				return firebase.auth().signInWithCredential(credential);
+			})
+			.then((user) => {
+				// setAuthPassword(user.user.uid)
 				// If you need to do anything with the user, do it here
 				// The user will be logged in automatically by the
 				// `onAuthStateChanged` listener we set up in App.js earlier
 				console.tron.log(user)
-				const newValues = {
-					...values,
-					password: user.user.uid
+				const userInformation = {
+					password: user.user.uid,
+					email: user.user.email,
+					fullName: user.user.displayName,
+					authType: 'facebook'
 				}
-				this.setState({ loading: false })
-				
-				return user.user.emailVerified ? signInUserAsync(newValues) : sendEmailVerificationAsync(email)
+				// @ts-ignore
+				signInUserAsync(userInformation)
+				this.setState({ googleLoading: false })
 			})
 			.catch((error) => {
+				console.tron.log(error)
 				const { code, message } = error;
+				console.log(message)
+				console.log(code)
+				notify(`${message}`, 'danger')
 				// For details of error codes, see the docs
 				// The message contains the default Firebase string
 				// representation of the error
-				console.tron.log(error)
-				this.setState({ loading: false })
-				notify(`${message}`, 'danger')
+				this.setState({ googleLoading: false })
 			});
 	}
-	
-	onForgetPassword = async () => {
-		this.setState({ loading: true })
-		
-		const auth = firebase.auth();
-		const emailAddress = this.formik.values.email.toString().trim();
-		console.tron.log(emailAddress.trim())
-		
-
-		try {
-			const result = await auth.sendPasswordResetEmail(emailAddress)
-			console.log(result)
-			this.setState({ loading: false })
-			this.props.notify(`Please check your email...`, 'success')
-			// this.props.notify(`${}`, 'success')
-		} catch (error) {
-			console.tron.log(error)
-			this.setState({ loading: false })
-			this.props.notify(`${error.message}`, 'danger')
-		}
-	}
-	
 	
 	public render(): React.ReactNode {
 		
@@ -344,13 +389,13 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 					alwaysBounceVertical={false}
 					style={SCROLL_VIEW}
 				>
-					
+
 					{
 						Platform.OS === "ios"
 							? <StatusBar barStyle={"light-content"} />
 							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.companyGreenTwo} />
 					}
-					
+
 					<ImageBackground
 						source={images.authBackground}
 						style={BACKGROUND_IMAGE}
@@ -365,20 +410,20 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 								backgroundColor: 'transparent'
 							}}
 						/>
-						
+
 						<View
 							style={BACKGROUND_VIEW}
 						>
 							<View
 								style={TOP_VIEW}
 							>
-								
+
 								<Text
 									style={HEADER_TEXT}
 								>
 									{translate(`common.logIn`)}
 								</Text>
-								
+
 								<View
 									style={HEADER_VIEW}
 								>
@@ -398,7 +443,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 										</Text>
 									</TouchableOpacity>
 								</View>
-								
+
 								<Formik
 									initialValues={{
 										email: authEmail,
@@ -424,7 +469,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 											<View
 												style={FIELD}
 											>
-												
+
 												<TextField
 													name="email"
 													keyboardType="email-address"
@@ -441,7 +486,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 														this.emailInput = i
 													}}
 												/>
-												
+
 												<TextField
 													name="password"
 													secureTextEntry
@@ -459,8 +504,7 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 													blurOnSubmit={false}
 													onSubmitEditing={() => Keyboard.dismiss()}
 												/>
-											
-											
+
 											</View>
 										</View>
 									)}
@@ -490,9 +534,53 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.logIn`)}</Text>
 									</Button>
 								</View>
-							
-							
 							</View>
+							
+							{
+								authUserType === "Individual" && (
+									<View
+										style={SOCIAL_VIEW}
+									>
+										<Text
+											style={SOCIAL_TEXT}
+										>
+											{translate(`signIn.continue`)}
+										</Text>
+										
+										<View
+											style={{
+												flexDirection: "row",
+											}}
+										>
+											<TouchableOpacity
+												disabled={isLoading || loading}
+												onPress={this.onFacebookLoginOrRegister}
+											>
+												<Image
+													source={images.facebookIcon}
+													style={[SOCIAL_ICON, { marginRight: 10 }]}
+												/>
+											</TouchableOpacity>
+											
+											<Text
+												style={[OR, { marginRight: 10 }]}
+											>
+												{translate(`signIn.or`)}
+											</Text>
+											
+											<TouchableOpacity
+												disabled={isLoading || loading}
+												onPress={this.onGoogleLoginOrRegister}
+											>
+												<Image
+													source={images.googleIcon}
+													style={SOCIAL_ICON}
+												/>
+											</TouchableOpacity>
+										</View>
+									</View>
+								)
+							}
 							
 							<View
 								style={BOTTOM_VIEW}
@@ -504,12 +592,6 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 										alignSelf: "center"
 									}}
 								>
-									<Text
-										style={BOTTOM_TEXT}
-									>
-										{translate(`signIn.fingerPrint`)}
-									</Text>
-									
 									<Image
 										source={images.fingerPrint}
 										style={{
@@ -560,8 +642,8 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
 	signInUserWithBiometricsAsync: () => dispatch(signInUserWithBiometricsAsync()),
 	signInUserAsync: (values: authCredentials) => dispatch(signInUserAsync(values)),
-	sendEmailVerificationAsync: (email: string) => dispatch(sendEmailVerificationAsync(email)),
 	notify: (message:string, type: string) => dispatch(notify(message, type)),
+	forgotPasswordAsync: (email: string) => dispatch(forgotPasswordAsync(email)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;

@@ -76,4 +76,9 @@ export interface TextFieldProps extends TextInputProps {
    * Optional component to be displayed on the right side of the text-input
    */
   extraComponent?: React.ReactNode
+  
+  /**
+   * Optional component to be displayed on the right side of the text-input
+   */
+  topComponent?: React.ReactNode
 }

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Image } from "react-native"
+import {Image, ImageBackground, TouchableOpacity, View} from "react-native"
 import {
   StackNavigatorConfig,
   TabNavigatorConfig,
@@ -7,10 +7,7 @@ import {
   BottomTabNavigatorConfig
 } from "react-navigation"
 
-// import { Icon } from "../components/icon"
-import { Icon } from "native-base"
-import { images } from "../theme";
-import {Layout} from "../constants";
+import {colors, images} from "../theme";
 
 /**
  * The default stack navigator config for this app.
@@ -32,24 +29,49 @@ export const DEFAULT_BOTTOM_NAVIGATION: BottomTabNavigatorConfig = {
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
       const { routeName } = navigation.state;
       let image: any
-      if (routeName === 'home') {
-        image = images.globe;
-      } if (routeName === 'search') {
-        image = images.search;
-      } if (routeName === 'contactUs') {
-        image = images.contactUs;
-      } if (routeName === 'profile') {
-        image = images.profile;
+      if (routeName === 'landing') {
+        image = focused ? images.homeIconTrue : images.homeFalse;
+      } if (routeName === 'records') {
+        image = focused ? images.recordsIconTrue : images.records;
+      } if (routeName === 'cart') {
+        image = focused ? images.cartIconTrue : images.cartIcon;
+      } if (routeName === 'notifications') {
+        image = focused ? images.notificationIconTrue : images.notifications
+      } if (routeName === 'account') {
+        image = focused ? images.accountIconTrue : images.accountIcon
       }
       
-      return <Image
-        source={image}
-        resizeMethod={'auto'}
-        resizeMode='cover'
-        style={{
-          tintColor
-        }}
-      />
+      return focused
+        ?
+        <TouchableOpacity
+          style={{
+            width: 70,
+            height: 70,
+            top: -25,
+            backgroundColor: colors.AuthBG,
+            borderRadius: 30,
+          }}
+        >
+          <Image
+            style={{
+              width: 100,
+              height: 100,
+              right: 15,
+              top: -13,
+            }}
+    
+            source={image}
+            resizeMethod={'auto'}
+            resizeMode='cover'
+          />
+        </TouchableOpacity>
+      
+      :
+        <Image
+          source={image}
+          resizeMethod={'auto'}
+          resizeMode='cover'
+        />
       
     },
   }),
@@ -57,7 +79,8 @@ export const DEFAULT_BOTTOM_NAVIGATION: BottomTabNavigatorConfig = {
     activeTintColor: '#3a203b',
     inactiveTintColor: '#566176',
     style: {
-      backgroundColor: '#fff'
+      backgroundColor: '#fff',
+      borderColor: 'red'
     },
     showLabel: false,
   },

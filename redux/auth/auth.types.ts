@@ -121,6 +121,35 @@ type SignInUserSuccess = {
 	type: typeof SIGN_IN_USER_SUCCESS
 }
 
+export const FORGOT_PASSWORD = "FORGOT_PASSWORD"
+type ForgotPassword = {
+	type: typeof FORGOT_PASSWORD
+}
+
+export const FORGOT_PASSWORD_FAILURE = "FORGOT_PASSWORD_FAILURE"
+type ForgotPasswordFailure = {
+	type: typeof FORGOT_PASSWORD_FAILURE
+}
+
+export const FORGOT_PASSWORD_SUCCESS = "FORGOT_PASSWORD_SUCCESS"
+type ForgotPasswordSuccess = {
+	type: typeof FORGOT_PASSWORD_SUCCESS
+}
+
+export const EDIT_PASSWORD = "EDIT_PASSWORD"
+type editPassword = {
+	type: typeof EDIT_PASSWORD
+}
+
+export const EDIT_PASSWORD_FAILURE = "EDIT_PASSWORD_FAILURE"
+type editPasswordFailure = {
+	type: typeof EDIT_PASSWORD_FAILURE
+}
+
+export const EDIT_PASSWORD_SUCCESS = "EDIT_PASSWORD_SUCCESS"
+type editPasswordSuccess = {
+	type: typeof EDIT_PASSWORD_SUCCESS
+}
 
 export type IUser = {
 	id: number
@@ -154,12 +183,21 @@ export type IUser = {
 
 export type authCredentials = {
 	fullName?: string
+	authType?: string
 	companyName?: string
 	email: string
-	password: string
+	password?: string
 	userType?: string
 	folioNumber?: string
 	notificationId?: string
+}
+
+export type forgotPasswordFields = {
+	code: string
+	password?: string
+	confirmPassword?: string
+	userType?: string
+	email?: string
 }
 
 export type AuthState = {
@@ -198,3 +236,9 @@ export type AuthAction =
 	| SignInUser
 	| SignInUserFailure
 	| SignInUserSuccess
+	| ForgotPassword
+	| ForgotPasswordFailure
+	| ForgotPasswordSuccess
+	| editPassword
+	| editPasswordFailure
+	| editPasswordSuccess

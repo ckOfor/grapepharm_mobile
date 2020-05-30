@@ -13,23 +13,26 @@ const CONTAINER = (
   hasBorder: boolean = true
 ): ViewStyle => ({
   borderWidth: hasBorder ? 2 : 0,
-  borderColor: isInvalid ? colors.red : colors.white,
+  borderColor: isInvalid ? colors.red : colors.textFieldBDColor,
+  // width: Layout.window.width / 1.3,
   borderRadius: 10,
-  minWidth: Layout.window.width / 1.2,
-  maxWidth: Layout.window.width / 1.2,
+  flexDirection: 'row',
+  backgroundColor: colors.white,
+  alignItems: "center",
+  justifyContent: "center",
 })
 
 // the base styling for the TextInput
 const INPUT: TextStyle = {
-  fontFamily: fonts.gibsonRegular,
-  color: colors.darkGreen,
+  fontFamily: fonts.PoppinsRegular,
+  color: colors.textFieldColor,
   paddingHorizontal: 18,
   paddingVertical: 16,
   backgroundColor: colors.textFieldBGColor,
   height: 50,
   borderRadius: 10,
-  borderWidth: 1,
-  borderColor: colors.textFieldBDColor
+  borderColor: colors.textFieldBDColor,
+  width: Layout.window.width / 1.31,
 }
 
 const FIELD_VALIDATION = (
@@ -80,6 +83,7 @@ export class TextField extends React.Component<TextFieldProps, State> {
       fieldError,
       padFieldForError = true,
       extraComponent,
+      topComponent,
       multiline,
       numberOfLines,
       ...rest
@@ -107,10 +111,11 @@ export class TextField extends React.Component<TextFieldProps, State> {
           <Text preset="fieldLabel" text={labelText} style={LABEL} />
         )}
         <View style={containerStyle}>
+          {Boolean(topComponent) ? topComponent : null}
           <TextInput
             clearButtonMode={"while-editing"}
             placeholder={placeholderText}
-            placeholderTextColor={colors.darkPurple}
+            placeholderTextColor={colors.textFieldColor}
             underlineColorAndroid={colors.transparent}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}

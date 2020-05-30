@@ -138,7 +138,7 @@ class App extends React.Component<Props, State> {
         require('./assets/individualIcon.png'),
         require('./assets/doctorsIcon.png'),
         require('./assets/companyIcon.png'),
-        require('./assets/continueBackgroundLogo.png'),
+        require('./assets/landingBKG.png'),
       ]),
       Font.loadAsync({
         "Gibson-Bold": require("./assets/fonts/gibson-bold.ttf"),

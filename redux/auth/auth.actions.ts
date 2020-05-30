@@ -26,7 +26,17 @@ import {
 	SET_AUTH_PASSWORD,
 	SIGN_IN_USER_WITH_BIOMETRICS,
 	SIGN_IN_USER_WITH_BIOMETRICS_SUCCESS,
-	SIGN_IN_USER_WITH_BIOMETRICS_FAILURE, SIGN_IN_USER, SIGN_IN_USER_FAILURE, SIGN_IN_USER_SUCCESS,
+	SIGN_IN_USER_WITH_BIOMETRICS_FAILURE,
+	SIGN_IN_USER,
+	SIGN_IN_USER_FAILURE,
+	SIGN_IN_USER_SUCCESS,
+	FORGOT_PASSWORD,
+	FORGOT_PASSWORD_FAILURE,
+	FORGOT_PASSWORD_SUCCESS,
+	forgotPasswordFields,
+	EDIT_PASSWORD,
+	EDIT_PASSWORD_FAILURE,
+	EDIT_PASSWORD_SUCCESS,
 } from "./auth.types";
 import { notify } from "../startup";
 
@@ -36,8 +46,10 @@ import {
 	signUpDoctor as apiSignUpDoctor,
 	signUpCompany as apiSignUpCompany,
 	signInUser as apiSignInUser,
+	forgotPassword as apiForgotPassword,
+	editPassword as apiEditPassword,
 } from "../../services/api"
-import {NavigationActions} from "react-navigation";
+import { NavigationActions } from "react-navigation";
 
 export const setFCMToken = (payload: string) => ({
 	type: SET_FCM_TOKEN,
@@ -54,12 +66,12 @@ export const setAuthEmail = (payload: string) => ({
 	payload
 })
 
-export const setAuthPassword = (payload: string) => ({
+export const setAuthPassword = (payload: string | undefined) => ({
 	type: SET_AUTH_PASSWORD,
 	payload
 })
 
-export const setAuthUserType = (payload: string) => ({
+export const setAuthUserType = (payload: string | undefined) => ({
 	type: SET_AUTH_USER_TYPE,
 	payload
 })
@@ -87,7 +99,7 @@ export const signUpIndividualAsync = (values: authCredentials): ThunkAction<void
 	dispatch,
 	getState
 ) => {
-	const { fullName, email, password } = values
+	const { fullName, email, password, authType } = values
 	const notificationId = getState().auth.notificationId
 	const newValues = {
 		...values,
@@ -96,6 +108,7 @@ export const signUpIndividualAsync = (values: authCredentials): ThunkAction<void
 	
 	dispatch(setAuthFullName(fullName))
 	dispatch(setAuthEmail(email))
+	dispatch(setAuthUserType(authType))
 	dispatch(setAuthPassword(password))
 	dispatch(signUpIndividual())
 	
@@ -105,9 +118,11 @@ export const signUpIndividualAsync = (values: authCredentials): ThunkAction<void
 		
 		if (status) {
 			dispatch(notify(`${message}`, 'success'))
-			// dispatch(signUpIndividualSuccess())
+			dispatch(signUpIndividualSuccess())
 			dispatch(setUserDetails(data))
-			dispatch(sendEmailVerificationAsync(email))
+			if(authType === "email") {
+				dispatch(NavigationActions.navigate({ routeName: 'signIn' }))
+			}
 		} else {
 			dispatch(notify(`${message}`, 'danger'))
 			dispatch(signUpIndividualFailure())
@@ -157,10 +172,10 @@ export const signUpDoctorAsync = (values: authCredentials): ThunkAction<void, Ap
 		const { status, message, data } = result.data
 		
 		if (status) {
-			// dispatch(notify(`${message}`, 'success'))
+			dispatch(notify(`${message}`, 'success'))
 			dispatch(signUpDoctorSuccess())
 			dispatch(setUserDetails(data))
-			dispatch(sendEmailVerificationAsync(email))
+			dispatch(NavigationActions.navigate({ routeName: 'signIn' }))
 		} else {
 			dispatch(notify(`${message}`, 'danger'))
 			dispatch(signUpDoctorFailure())
@@ -204,10 +219,10 @@ export const signUpCompanyAsync = (values: authCredentials): ThunkAction<void, A
 		const { status, message, data } = result.data
 		
 		if (status) {
-			// dispatch(notify(`${message}`, 'success'))
+			dispatch(notify(`${message}`, 'success'))
 			dispatch(signUpCompanySuccess())
 			dispatch(setUserDetails(data))
-			dispatch(sendEmailVerificationAsync(email))
+			dispatch(NavigationActions.navigate({ routeName: 'signIn' }))
 		} else {
 			dispatch(notify(`${message}`, 'danger'))
 			dispatch(signUpCompanyFailure())
@@ -278,16 +293,17 @@ export const signInUserAsync = (values: authCredentials): ThunkAction<void, Appl
 	dispatch,
 	getState
 ) => {
-	const { email, password } = values
+	const { email, password, authType, fullName } = values
 	const notificationId = getState().auth.notificationId
 	const userType = getState().auth.userType.toLocaleLowerCase()
 
 	dispatch(setAuthEmail(email))
+	dispatch(setAuthFullName(fullName))
 	dispatch(setAuthPassword(password))
 	dispatch(signInUser())
 	
 	try {
-		const result = await apiSignInUser({ email, password, notificationId, userType })
+		const result = await apiSignInUser({ email, password, notificationId, userType, authType, fullName })
 		const { status, message, data } = result.data
 		
 		if (status) {
@@ -304,27 +320,81 @@ export const signInUserAsync = (values: authCredentials): ThunkAction<void, Appl
 	}
 }
 
+export const forgotPassword = () => ({
+	type: FORGOT_PASSWORD,
+})
 
-export const sendEmailVerificationAsync = (email: string): ThunkAction<void, ApplicationState, null, Action<any>> => async (dispatch, getState) => {
+export const forgotPasswordFailure = () => ({
+	type: FORGOT_PASSWORD_FAILURE,
+})
+
+export const forgotPasswordSuccess = () => ({
+	type: FORGOT_PASSWORD_SUCCESS,
+})
+
+export const forgotPasswordAsync = (email: string): ThunkAction<void, ApplicationState, null, Action<any>> => async (
+	dispatch,
+	getState
+) => {
+	const userType = getState().auth.userType.toLocaleLowerCase()
+
+	dispatch(setAuthEmail(email))
+	dispatch(forgotPassword())
+
+	try {
+		const result = await apiForgotPassword({ email, userType })
+		const { status, message } = result.data
+
+		if (status) {
+			dispatch(notify(`${message}`, 'success'))
+			dispatch(forgotPasswordSuccess())
+			dispatch(NavigationActions.navigate({ routeName: 'forgotPassword' }))
+		} else {
+			dispatch(notify(`${message}`, 'danger'))
+			dispatch(forgotPasswordFailure())
+		}
+	} catch ({ message }) {
+		dispatch(forgotPasswordFailure())
+		dispatch(notify(`${message}`, 'danger'))
+	}
+}
+
+export const editPassword = () => ({
+	type: EDIT_PASSWORD,
+})
+
+export const editPasswordFailure = () => ({
+	type: EDIT_PASSWORD_FAILURE,
+})
+
+export const editPasswordSuccess = () => ({
+	type: EDIT_PASSWORD_SUCCESS,
+})
+
+export const editPasswordAsync = (values: forgotPasswordFields): ThunkAction<void, ApplicationState, null, Action<any>> => async (
+	dispatch,
+	getState
+) => {
+	const { code, password } = values
+	const userType = getState().auth.userType.toLocaleLowerCase()
+	const email = getState().auth.email
 	
-	console.tron.log(email)
+	dispatch(editPassword())
 	
 	try {
-		// @ts-ignore
-		firebase.auth()
-			.currentUser
-			.sendEmailVerification()
-			.then((success) => {
-				console.tron.log(success)
-				dispatch(notify(`We have sent a verification link to ${email}`, 'success'))
-				dispatch(NavigationActions.navigate({ routeName: 'signIn'  }))
-			})
-			.catch(error =>{
-				console.tron.log(error)
-				dispatch(notify(`${error.message}`, 'danger'))
-			})
-	} catch ({message}) {
-		console.tron.log(message)
+		const result = await apiEditPassword({ email, code, userType, password })
+		const { status, message } = result.data
+		
+		if (status) {
+			dispatch(notify(`${message}`, 'success'))
+			dispatch(editPasswordSuccess())
+			dispatch(NavigationActions.navigate({ routeName: 'signIn' }))
+		} else {
+			dispatch(notify(`${message}`, 'danger'))
+			dispatch(editPasswordFailure())
+		}
+	} catch ({ message }) {
+		dispatch(editPasswordFailure())
 		dispatch(notify(`${message}`, 'danger'))
 	}
 }

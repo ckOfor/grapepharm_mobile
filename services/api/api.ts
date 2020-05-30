@@ -3,7 +3,7 @@ import apisauce from "apisauce"
 import { RN_API_ENDPOINT_BASE } from "react-native-dotenv"
 import * as Types from "./api.types"
 import { getGeneralApiProblem } from "./api-problem"
-import {authCredentials} from "../../redux/auth";
+import {authCredentials, forgotPasswordFields} from "../../redux/auth";
 
 const api = apisauce.create({
   // base URL is read from the "constructor"
@@ -66,7 +66,25 @@ const signUpCompany = async (values: authCredentials): Promise<
 const signInUser = async (values: authCredentials): Promise<
   Types.getResponse
   > => {
-  const response = await api.post("/signin", {
+  const response = await api.post( `/${values.userType}/signin`, {
+    ...values
+  })
+  return processResponse(response)
+}
+
+const forgotPassword = async (values: authCredentials): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post( `/${values.userType}/reset/password`, {
+    ...values
+  })
+  return processResponse(response)
+}
+
+const editPassword = async (values: forgotPasswordFields): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post( `/${values.userType}/edit/password`, {
     ...values
   })
   return processResponse(response)
@@ -76,5 +94,7 @@ export {
   signUpIndividual,
   signUpDoctor,
   signUpCompany,
-  signInUser
+  signInUser,
+  forgotPassword,
+  editPassword
 }

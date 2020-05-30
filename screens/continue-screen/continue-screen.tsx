@@ -125,7 +125,7 @@ class Continue extends React.Component<NavigationScreenProps & Props> {
 					textStyle={NEXT_BUTTON_TEXT}
 					onPress={() => {
 						setAuthUserType('Individual')
-						navigation.navigate('signIn')
+						navigation.navigate('landing')
 					}}
 					tx={`intro.screenOneHeader`}
 				/>

@@ -22,7 +22,9 @@
     "emailError": "invalid email format",
     "passwordError": "Password length must be 6 or more",
     "confirmPassword": "Password does not match",
-    "register": "Register"
+    "register": "Register",
+    "codeLength": "Invalid code length",
+    "codePlatform": "Enter activation code"
   },
   "intro": {
     "screenOneHeader": "Individual",
@@ -54,6 +56,20 @@
   },
   "signIn": {
     "fingerPrint": "Or fingerprint/faceId Login",
-    "signUp": "Don't have an account? "
+    "signUp": "Don't have an account? ",
+    "continue": "Continue with ",
+    "or": "or"
+  },
+  "forgot": {
+    "header": "Forgot Password",
+    "reset": "Reset"
+  },
+  "landing": {
+    "welcome": "Welcome to",
+    "appName": "GrapePharm",
+    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+    "search": "Search",
+    "pharmacy": "Pharmacy near you",
+    "seeAll": "See All"
   }
 }

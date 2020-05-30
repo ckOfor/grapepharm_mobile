@@ -3,18 +3,8 @@ import React from "react"
 
 // react-native
 import {
-	View,
-	ViewStyle,
-	StatusBar,
-	Platform,
-	ImageBackground,
-	ImageStyle,
-	Text,
-	TextStyle,
-	Image,
-	TouchableOpacity,
-	KeyboardAvoidingView,
-	NativeMethodsMixinStatic, Keyboard, ActivityIndicator, ScrollView
+	View, ViewStyle, StatusBar, Platform, ImageBackground, ImageStyle, Text, TextStyle, Image, TouchableOpacity,
+	KeyboardAvoidingView, NativeMethodsMixinStatic, Keyboard, ScrollView
 } from "react-native";
 
 // third-party
@@ -26,21 +16,18 @@ import * as Yup from "yup";
 
 // redux
 import { ApplicationState } from "../../redux";
+import { authCredentials, signUpCompanyAsync } from "../../redux/auth";
 
 // styles
 import { Layout } from "../../constants";
 import { colors, fonts, images } from "../../theme";
 import { translate } from "../../i18n";
 import { Header } from "../../components/header";
-import {TextField} from "../../components/text-field";
-import {Button} from "../../components/button";
-import {signUpIndividualAsync, authCredentials, signUpCompanyAsync} from "../../redux/auth";
-import firebase from "react-native-firebase";
-import {notify} from "../../redux/startup";
+import { TextField } from "../../components/text-field";
+import { Button } from "../../components/button";
 
 interface DispatchProps {
 	signUpCompanyAsync: (values: authCredentials) => void
-	notify: (message: string, type: string)  => void
 }
 
 interface StateProps {
@@ -205,57 +192,36 @@ const BOTTOM_TEXT_LOGIN: TextStyle = {
 };
 
 class ComSignUp extends React.Component<NavigationScreenProps & Props> {
-	
+
 	companyNameInput: NativeMethodsMixinStatic | any
 	emailInput: NativeMethodsMixinStatic | any
 	passwordInput: NativeMethodsMixinStatic | any
 	confirmPasswordInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
-	
+
 	state={
 		pharmacy: true,
 		manufacturer: false,
 	}
-	
+
 	submit = (values: authCredentials) => {
 		const { manufacturer } = this.state
-		const { signUpCompanyAsync, notify } = this.props;
-		this.setState({ loading: true })
-		
-		const { email, password } = values;
-		
-		firebase.auth().createUserWithEmailAndPassword(email, password)
-			.then((user) => {
-				// If you need to do anything with the user, do it here
-				// The user will be logged in automatically by the
-				// `onAuthStateChanged` listener we set up in App.js earlier
-				const newValues = {
-					...values,
-					companyType: manufacturer ? "manufacturer" : "pharmacy",
-					password: user.user.uid
-				}
-				console.tron.log(user)
-				signUpCompanyAsync(newValues)
-				this.setState({ loading: false })
-			})
-			.catch((error) => {
-				const { code, message } = error;
-				// For details of error codes, see the docs
-				// The message contains the default Firebase string
-				// representation of the error
-				console.tron.log(error)
-				this.setState({ loading: false })
-				notify(`${message}`, 'danger')
-			});
+		const { signUpCompanyAsync } = this.props;
+		const newValues = {
+			...values,
+			companyType: manufacturer ? "manufacturer" : "pharmacy",
+			authType: 'email'
+		}
+		signUpCompanyAsync(newValues)
 	}
-	
+
 	public render(): React.ReactNode {
 		
 		const {
 			navigation, authCompanyName, authEmail, isLoading
 		} = this.props
 		
-		const { pharmacy, manufacturer, loading } = this.state
+		const { pharmacy, manufacturer } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -458,24 +424,24 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 										</Text>
 									</View>
 									
-									<View
-										style={RADIO_VIEW}
-									>
-										<TouchableOpacity
-											onPress={() => !manufacturer && this.setState({ pharmacy : !pharmacy, manufacturer: !manufacturer })}
-										>
-											<Image
-												source={manufacturer ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
-												style={AGE_ICON}
-											/>
-										</TouchableOpacity>
-										
-										<Text
-											style={[TICK_TEXT, { color: manufacturer ? colors.companyGreenTwo : colors.darkPurple }]}
-										>
-											{translate(`comSignUp.manufacturer`)}
-										</Text>
-									</View>
+									{/*<View*/}
+									{/*	style={RADIO_VIEW}*/}
+									{/*>*/}
+									{/*	<TouchableOpacity*/}
+									{/*		onPress={() => !manufacturer && this.setState({ pharmacy : !pharmacy, manufacturer: !manufacturer })}*/}
+									{/*	>*/}
+									{/*		<Image*/}
+									{/*			source={manufacturer ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}*/}
+									{/*			style={AGE_ICON}*/}
+									{/*		/>*/}
+									{/*	</TouchableOpacity>*/}
+									{/*	*/}
+									{/*	<Text*/}
+									{/*		style={[TICK_TEXT, { color: manufacturer ? colors.companyGreenTwo : colors.darkPurple }]}*/}
+									{/*	>*/}
+									{/*		{translate(`comSignUp.manufacturer`)}*/}
+									{/*	</Text>*/}
+									{/*</View>*/}
 									
 								</View>
 								
@@ -485,9 +451,9 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 								>
 									<Button
 										style={CONTINUE_BUTTON}
-										loading={isLoading || loading}
+										loading={isLoading}
 										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading || loading}
+										disabled={isLoading}
 										onPress={() => this.formik.handleSubmit()}
 									>
 										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
@@ -526,8 +492,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpCompanyAsync: (values: authCredentials) => dispatch(signUpCompanyAsync(values)),
-	notify: (message: string, type: string) => dispatch(notify(message, type)),
+	signUpCompanyAsync: (values: authCredentials) => dispatch(signUpCompanyAsync(values))
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
