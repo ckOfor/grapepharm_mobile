@@ -32,6 +32,9 @@ export const images = {
 	star: require("../assets/star.png"),
 	googleIcon: require("../assets/googleIcon.png"),
 	facebookIcon: require("../assets/facebookIcon.png"),
+	btnBackground: require("../assets/btnBackground.png"),
+	btnBKC: require("../assets/btnBKC.png"),
+	registerBTN: require("../assets/registerBTN.png"),
 };
 
 export type ImageTypes = keyof typeof images

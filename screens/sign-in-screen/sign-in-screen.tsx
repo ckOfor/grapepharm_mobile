@@ -144,7 +144,8 @@ const CHANGE_TEXT: TextStyle = {
 const BOTTOM_VIEW: ViewStyle = {
 	flexDirection: 'column',
 	justifyContent: 'space-between',
-	height: Layout.window.height / 5
+	height: Layout.window.height / 5,
+	marginTop: 10
 }
 
 const BOTTOM_TEXT: TextStyle = {
@@ -168,7 +169,7 @@ const FORGOT_PASSWORD: TextStyle = {
 };
 
 const BUTTON_VIEW: ViewStyle = {
-	margin: 40
+	margin: 30
 }
 
 const SOCIAL_VIEW: ViewStyle = {
@@ -226,6 +227,19 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 	emailInput: NativeMethodsMixinStatic | any
 	passwordInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
+	
+	componentDidMount() {
+		GoogleSignin.configure({
+			// scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+			webClientId: '273507072258-d7qp1o9m701j9gi0unfv47a6e9q0ocve.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+			offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+			hostedDomain: '', // specifies a hosted domain restriction
+			loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
+			forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+			accountName: '', // [Android] specifies an account name on the device that should be used
+			iosClientId: '273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+		});
+	}
 	
 	checkDeviceForHardware = async () => {
 		let compatible = await LocalAuthentication.hasHardwareAsync()
@@ -524,15 +538,40 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 								<View
 									style={BUTTON_VIEW}
 								>
-									<Button
-										loading={isLoading || loading}
-										style={CONTINUE_BUTTON}
-										textStyle={CONTINUE_BUTTON_TEXT}
+									<TouchableOpacity
+										style={{
+											alignSelf: 'center'
+										}}
 										disabled={isLoading || loading}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.logIn`)}</Text>
-									</Button>
+										
+										{
+											isLoading || loading && (
+												<ImageBackground
+													style={{
+														width: 257.71,
+														height: 45,
+														alignItems: 'center',
+														justifyContent: 'center'
+													}}
+													source={images.btnBKC}
+												>
+													<ActivityIndicator
+														color={colors.white}
+													/>
+												</ImageBackground>
+											)
+										}
+										
+										{
+											!isLoading && !loading && (
+												<Image
+													source={images.btnBackground}
+												/>
+											)
+										}
+									</TouchableOpacity>
 								</View>
 							</View>
 							

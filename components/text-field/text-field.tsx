@@ -25,7 +25,7 @@ const CONTAINER = (
 // the base styling for the TextInput
 const INPUT: TextStyle = {
   fontFamily: fonts.PoppinsRegular,
-  color: colors.textFieldColor,
+  color: colors.darkGreen,
   paddingHorizontal: 18,
   paddingVertical: 16,
   backgroundColor: colors.textFieldBGColor,

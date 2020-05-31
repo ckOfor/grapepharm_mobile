@@ -4,7 +4,7 @@ import React from "react"
 // react-native
 import {
 	View, ViewStyle, StatusBar, Platform, ImageBackground, ImageStyle, Text, TextStyle, Image, TouchableOpacity,
-	KeyboardAvoidingView, NativeMethodsMixinStatic, Keyboard, ScrollView
+	KeyboardAvoidingView, NativeMethodsMixinStatic, Keyboard, ScrollView, ActivityIndicator
 } from "react-native";
 
 // third-party
@@ -168,21 +168,7 @@ const RADIO_VIEW: TextStyle = {
 };
 
 const BUTTON_VIEW: ViewStyle = {
-	marginBottom: 15
-}
-
-const CONTINUE_BUTTON: ViewStyle = {
-	alignSelf: "center",
-	justifyContent: "center",
-	borderRadius: 100,
-	width: Layout.window.width / 1.8,
-	backgroundColor: colors.companyGreenTwo
-}
-
-const CONTINUE_BUTTON_TEXT: TextStyle = {
-	fontSize: 14,
-	fontFamily: fonts.PoppinsSemiBold,
-	color: colors.palette.white,
+	marginBottom: 30
 }
 
 const BOTTOM_TEXT_LOGIN: TextStyle = {
@@ -449,15 +435,40 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 								<View
 									style={BUTTON_VIEW}
 								>
-									<Button
-										style={CONTINUE_BUTTON}
-										loading={isLoading}
-										textStyle={CONTINUE_BUTTON_TEXT}
+									<TouchableOpacity
+										style={{
+											alignSelf: 'center'
+										}}
 										disabled={isLoading}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-									</Button>
+										
+										{
+											isLoading && (
+												<ImageBackground
+													style={{
+														width: 257.71,
+														height: 45,
+														alignItems: 'center',
+														justifyContent: 'center'
+													}}
+													source={images.btnBKC}
+												>
+													<ActivityIndicator
+														color={colors.white}
+													/>
+												</ImageBackground>
+											)
+										}
+										
+										{
+											!isLoading && (
+												<Image
+													source={images.registerBTN}
+												/>
+											)
+										}
+									</TouchableOpacity>
 								</View>
 							
 							

@@ -14,7 +14,7 @@ import {
 	Image,
 	TouchableOpacity,
 	KeyboardAvoidingView,
-	NativeMethodsMixinStatic, Keyboard, ScrollView
+	NativeMethodsMixinStatic, Keyboard, ScrollView, ActivityIndicator
 } from "react-native";
 
 // third-party
@@ -165,7 +165,6 @@ const FIELD: ViewStyle = {
 
 const AGE_TEXT: TextStyle = {
 	color: colors.darkGreen,
-	// fontSize: 15,
 	fontFamily: fonts.PoppinsMedium,
 	marginLeft: 35,
 };
@@ -190,17 +189,8 @@ const AGE_RESTRICTION_VIEW: TextStyle = {
 };
 
 const BUTTON_VIEW: ViewStyle = {
-	marginBottom: 15
+	marginBottom: 20
 }
-
-const CONTINUE_BUTTON: ViewStyle = {
-	alignSelf: "center",
-	justifyContent: "center",
-	borderRadius: 100,
-	width: Layout.window.width / 1.8,
-	backgroundColor: colors.companyGreenTwo
-}
-
 
 const SOCIAL_VIEW: ViewStyle = {
 	margin: 30,
@@ -220,7 +210,6 @@ const FORGOT_PASSWORD: TextStyle = {
 
 const SOCIAL_TEXT: TextStyle = {
 	...FORGOT_PASSWORD,
-	// color: colors.socialText,
 	fontSize: 16,
 	marginTop: 5
 };
@@ -235,13 +224,6 @@ const OR: TextStyle = {
 	fontSize: 16,
 	marginTop: 10,
 };
-
-
-const CONTINUE_BUTTON_TEXT: TextStyle = {
-	fontSize: 14,
-	fontFamily: fonts.PoppinsSemiBold,
-	color: colors.palette.white,
-}
 
 const BOTTOM_TEXT_LOGIN: TextStyle = {
 	...BOTTOM_TEXT,
@@ -271,7 +253,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 			loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
 			forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
 			accountName: '', // [Android] specifies an account name on the device that should be used
-			// iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+			iosClientId: '273507072258-6einj7inhebaaqi7n907nci58iru33j2.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 		});
 	}
 	
@@ -387,8 +369,8 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 					
 					{
 						Platform.OS === "ios"
-							? <StatusBar barStyle={"light-content"} />
-							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.companyGreenTwo} />
+							? <StatusBar barStyle={"light-content"}/>
+							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.companyGreenTwo}/>
 					}
 					
 					<ImageBackground
@@ -533,11 +515,11 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 														this.confirmPasswordInput = i
 													}}
 													blurOnSubmit={false}
-													onSubmitEditing={()=> {
+													onSubmitEditing={() => {
 														Keyboard.dismiss()
 													}}
 												/>
-
+											
 											</View>
 										</View>
 									)}
@@ -559,7 +541,7 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 									</Text>
 									
 									<TouchableOpacity
-										onPress={() => this.setState({ termsAndConditions: !termsAndConditions })}
+										onPress={() => this.setState({termsAndConditions: !termsAndConditions})}
 									>
 										<Image
 											source={termsAndConditions ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
@@ -571,17 +553,41 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 								<View
 									style={BUTTON_VIEW}
 								>
-									<Button
-										loading={isLoading || loading}
-										style={CONTINUE_BUTTON}
-										textStyle={CONTINUE_BUTTON_TEXT}
-										disabled={isLoading || !termsAndConditions || loading}
+									<TouchableOpacity
+										style={{
+											alignSelf: 'center'
+										}}
+										disabled={isLoading || loading || !termsAndConditions}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										<Text style={CONTINUE_BUTTON_TEXT}>{translate(`common.register`)}</Text>
-									</Button>
+										{
+											isLoading && (
+												<ImageBackground
+													style={{
+														width: 257.71,
+														height: 45,
+														alignItems: 'center',
+														justifyContent: 'center'
+													}}
+													source={images.btnBKC}
+												>
+													<ActivityIndicator
+														color={colors.white}
+													/>
+												</ImageBackground>
+											)
+										}
+										
+										{
+											!isLoading && (
+												<Image
+													source={images.registerBTN}
+												/>
+											)
+										}
+									</TouchableOpacity>
 								</View>
-								
+							
 							
 							</View>
 							
@@ -607,12 +613,12 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 											>
 												<Image
 													source={images.facebookIcon}
-													style={[SOCIAL_ICON, { marginRight: 10 }]}
+													style={[SOCIAL_ICON, {marginRight: 10}]}
 												/>
 											</TouchableOpacity>
 											
 											<Text
-												style={[OR, { marginRight: 10 }]}
+												style={[OR, {marginRight: 10}]}
 											>
 												{translate(`signIn.or`)}
 											</Text>
@@ -651,11 +657,11 @@ class IndSignUp extends React.Component<NavigationScreenProps & Props> {
 							</TouchableOpacity>
 						</View>
 					</ImageBackground>
-					
+				
 				</ScrollView>
 			
 			</KeyboardAvoidingView>
-		)
+		);
 	}
 }
 

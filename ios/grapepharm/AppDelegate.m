@@ -22,6 +22,7 @@
 #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <RNGoogleSignin/RNGoogleSignin.h>
 
 @interface AppDelegate ()
 
@@ -132,7 +133,7 @@ fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHand
     openURL:url
     sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
     annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
-  ];
+  ] || [RNGoogleSignin application:application openURL:url options:options];
   // Add any custom logic here.
   return handled;
 }
