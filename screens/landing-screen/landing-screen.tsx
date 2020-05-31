@@ -290,7 +290,9 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 									const { item, index } = story;
 									
 									return (
-										<TouchableOpacity>
+										<TouchableOpacity
+											onPress={() => navigation.navigate('signIn')}
+										>
 											<Image
 												style={{
 													margin: 10,
