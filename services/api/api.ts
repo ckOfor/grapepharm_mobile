@@ -15,7 +15,7 @@ const api = apisauce.create({
     ContentType: 'application/json',
   },
   // 10 second timeout...
-  timeout: 10000
+  timeout: 30000
 })
 
 /**
@@ -90,11 +90,31 @@ const editPassword = async (values: forgotPasswordFields): Promise<
   return processResponse(response)
 }
 
+const fetchPredictionsFromServer = async (searchKey: string): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post( `/google/search`, {
+    searchKey
+  })
+  return processResponse(response)
+}
+
+const fetchLatitudeAndLongitudeFromServer = async (searchKey: string): Promise<
+  Types.getResponse
+  > => {
+  const response = await api.post( `/google/geocode`, {
+    searchKey
+  })
+  return processResponse(response)
+}
+
 export {
   signUpIndividual,
   signUpDoctor,
   signUpCompany,
   signInUser,
   forgotPassword,
-  editPassword
+  editPassword,
+  fetchPredictionsFromServer,
+  fetchLatitudeAndLongitudeFromServer
 }

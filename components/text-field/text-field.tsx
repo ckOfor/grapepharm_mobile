@@ -30,9 +30,11 @@ const INPUT: TextStyle = {
   paddingVertical: 16,
   backgroundColor: colors.textFieldBGColor,
   height: 50,
+  // lineHeight: 10,
   borderRadius: 10,
   borderColor: colors.textFieldBDColor,
-  width: Layout.window.width / 1.31,
+  width: Layout.window.width / 1.35,
+  // fontSize: 15
 }
 
 const FIELD_VALIDATION = (

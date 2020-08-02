@@ -42,6 +42,7 @@ export const colors = {
   trinidad: "#e75300",
   orange: "#F8A765",
   white: "#ffffff",
+  uploadImage: "#c7c7c7",
   blue1: "#78849E",
   moovBackground: "#404156",
   iron: "#e1e4e7",

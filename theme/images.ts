@@ -35,6 +35,10 @@ export const images = {
 	btnBackground: require("../assets/btnBackground.png"),
 	btnBKC: require("../assets/btnBKC.png"),
 	registerBTN: require("../assets/registerBTN.png"),
+	continueBTN: require("../assets/continueBTN.png"),
+	addIcon: require("../assets/addIcon.png"),
+	cancelIconRed: require("../assets/cancelIconRed.png"),
+	verificationIcon: require("../assets/verification.png"),
 };
 
 export type ImageTypes = keyof typeof images

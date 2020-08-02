@@ -545,32 +545,9 @@ class SignIn extends React.Component<NavigationScreenProps & Props> {
 										disabled={isLoading || loading}
 										onPress={() => this.formik.handleSubmit()}
 									>
-										
-										{
-											isLoading || loading && (
-												<ImageBackground
-													style={{
-														width: 257.71,
-														height: 45,
-														alignItems: 'center',
-														justifyContent: 'center'
-													}}
-													source={images.btnBKC}
-												>
-													<ActivityIndicator
-														color={colors.white}
-													/>
-												</ImageBackground>
-											)
-										}
-										
-										{
-											!isLoading && !loading && (
-												<Image
-													source={images.btnBackground}
-												/>
-											)
-										}
+										<Image
+											source={images.btnBackground}
+										/>
 									</TouchableOpacity>
 								</View>
 							</View>

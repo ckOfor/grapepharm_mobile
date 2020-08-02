@@ -25,6 +25,7 @@ import expo.modules.updates.UpdatesController;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
       List<ReactPackage> packages = new PackageList(this).getPackages();
       packages.add(new RNFirebaseMessagingPackage());
       packages.add(new RNFirebaseNotificationsPackage());
+//      packages.add(new FBSDKPackage());
       packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
       return packages;
     }

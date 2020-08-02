@@ -3,15 +3,8 @@ import React from "react"
 
 // react-native
 import {
-	View,
-	ViewStyle,
-	StatusBar,
-	Platform,
-	ImageBackground,
-	ImageStyle,
-	Image,
-	TextStyle,
-	NativeMethodsMixinStatic, FlatList, TouchableOpacity, ScrollView
+	View, ViewStyle, StatusBar, Platform, ImageBackground, ImageStyle, Image, TextStyle, NativeMethodsMixinStatic,
+	FlatList, TouchableOpacity, ScrollView, Linking
 } from "react-native";
 
 // third-party
@@ -19,7 +12,7 @@ import { NavigationScreenProps } from "react-navigation";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import * as Yup from "yup";
-import {Formik, FormikProps} from "formik";
+import { Formik, FormikProps } from "formik";
 
 // redux
 import { ApplicationState } from "../../redux";
@@ -32,11 +25,10 @@ import { Text } from "../../components/text";
 import {Layout} from "../../constants";
 import {colors, fonts, images} from "../../theme";
 import {translate} from "../../i18n";
-
-
+import {setAuthUserType} from "../../redux/auth";
 
 interface DispatchProps {
-
+	setAuthUserType: (userType: string) => void
 }
 
 interface StateProps {
@@ -115,11 +107,12 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 
 	public render(): React.ReactNode {
 
-		const { authSearchKey, navigation } = this.props
+		const { authSearchKey, navigation, setAuthUserType } = this.props
 
 		const data = [
-			require('../../assets/howToUser.png'),
-			require('../../assets/findADoctor.png'),
+			require('../../assets/callUs.png'),
+			require('../../assets/doctor.png'),
+			require('../../assets/pharmacies.png'),
 		]
 
 		const pharmacies = [
@@ -291,15 +284,22 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 									
 									return (
 										<TouchableOpacity
-											onPress={() => navigation.navigate('signIn')}
+											// onPress={() => navigation.navigate('signIn')}
+											onPress={() => {
+												if (index === 0) {
+													const text = "Hello GrapePharm..."
+													const phoneNumber = "23409010828496"
+													Linking.openURL(`whatsapp://send?text=${text}&phone=${phoneNumber}`)
+												} else if (index === 1) {
+													setAuthUserType('Doctor')
+													navigation.navigate('docSignUp')
+												} else if (index === 2) {
+													setAuthUserType('Company')
+													navigation.navigate('comSignUp')
+												}
+											}}
 										>
 											<Image
-												style={{
-													margin: 10,
-													borderWidth: 2,
-													borderColor: colors.textFieldColor,
-													borderRadius: 10
-												}}
 												source={item}
 											/>
 										</TouchableOpacity>
@@ -317,7 +317,8 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 						>
 							<Text
 								style={{
-									margin: 20,
+									marginLeft: 20,
+									marginBottom: 20,
 									color: colors.pharmacyNearYou,
 									fontFamily: fonts.PoppinsSemiBold
 								}}
@@ -325,15 +326,17 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 								{translate('landing.pharmacy')}
 							</Text>
 							
-							<Text
-								style={{
-									margin: 18,
-									color: colors.companyGreenTwo,
-									fontFamily: fonts.PoppinsSemiBold
-								}}
-							>
-								{translate('landing.seeAll')}
-							</Text>
+							<TouchableOpacity>
+								<Text
+									style={{
+										marginRight: 18,
+										color: colors.companyGreenTwo,
+										fontFamily: fonts.PoppinsSemiBold
+									}}
+								>
+									{translate('landing.seeAll')}
+								</Text>
+							</TouchableOpacity>
 						</View>
 						
 						<View>
@@ -437,7 +440,7 @@ class Landing extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-
+	setAuthUserType: (userType: string) => dispatch(setAuthUserType(userType))
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;

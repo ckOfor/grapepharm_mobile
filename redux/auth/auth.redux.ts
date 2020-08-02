@@ -7,6 +7,11 @@ import {
 	FORGOT_PASSWORD,
 	FORGOT_PASSWORD_FAILURE,
 	FORGOT_PASSWORD_SUCCESS,
+	SAVE_LOCATION_ADDRESS,
+	SAVE_LOCATION_DETAILS,
+	SAVE_LOCATION_GEOMETRY,
+	SAVE_LOCATION_NAME,
+	SAVE_PREDICTIONS,
 	SET_AUTH_COMPANY_NAME,
 	SET_AUTH_EMAIL,
 	SET_AUTH_FOLIO_NUMBER,
@@ -29,7 +34,12 @@ import {
 	SIGN_UP_DOCTOR_SUCCESS,
 	SIGN_UP_INDIVIDUAL,
 	SIGN_UP_INDIVIDUAL_FAILURE,
-	SIGN_UP_INDIVIDUAL_SUCCESS
+	SIGN_UP_INDIVIDUAL_SUCCESS,
+	UPDATE_USER_PROFILE_PICTURE,
+	UPDATE_USER_PROFILE_PICTURE_FAILURE,
+	UPDATE_USER_PROFILE_PICTURE_SUCCESS,
+	SET_PHONE_NUMBER,
+	SET_DELIVERY_FEE
 } from "./auth.types"
 
 const initialState: AuthState = {
@@ -41,7 +51,14 @@ const initialState: AuthState = {
 	notificationId: "",
 	folioNumber: "",
 	loading: false,
-	user: []
+	user: [],
+	predictions: [],
+	locationGeometry:[],
+	locationName: '',
+	locationAddress: '',
+	locationDetails: [],
+	phoneNumber: '',
+	deliveryFee: ''
 }
 
 export function authReducer(
@@ -74,6 +91,36 @@ export function authReducer(
 				folioNumber: action.payload
 			}
 		
+		case SAVE_LOCATION_NAME:
+			return {
+				...state,
+				locationName: action.payload
+			}
+		
+		case SAVE_LOCATION_ADDRESS:
+			return {
+				...state,
+				locationAddress: action.payload
+			}
+		
+		case SAVE_LOCATION_GEOMETRY:
+			return {
+				...state,
+				locationGeometry: action.payload
+			}
+		
+		case SAVE_LOCATION_DETAILS:
+			return {
+				...state,
+				locationDetails: action.payload
+			}
+		
+		case SAVE_PREDICTIONS:
+			return {
+				...state,
+				predictions: action.payload
+			}
+		
 		case SIGN_UP_INDIVIDUAL:
 		case SIGN_UP_DOCTOR:
 		case SIGN_UP_COMPANY:
@@ -81,6 +128,7 @@ export function authReducer(
 		case SIGN_IN_USER:
 		case FORGOT_PASSWORD:
 		case EDIT_PASSWORD:
+		case UPDATE_USER_PROFILE_PICTURE:
 			return {
 				...state,
 				loading: true
@@ -100,6 +148,8 @@ export function authReducer(
 		case FORGOT_PASSWORD_SUCCESS:
 		case EDIT_PASSWORD_FAILURE:
 		case EDIT_PASSWORD_SUCCESS:
+		case UPDATE_USER_PROFILE_PICTURE_FAILURE:
+		case UPDATE_USER_PROFILE_PICTURE_SUCCESS:
 			return {
 				...state,
 				loading: false
@@ -122,7 +172,19 @@ export function authReducer(
 				...state,
 				companyName: action.payload
 			}
-		
+
+		case SET_PHONE_NUMBER:
+			return {
+				...state,
+				phoneNumber: action.payload
+			}
+
+		case SET_DELIVERY_FEE:
+			return {
+				...state,
+				deliveryFee: action.payload
+			}
+	
 		case SET_AUTH_PASSWORD:
 			return {
 				...state,

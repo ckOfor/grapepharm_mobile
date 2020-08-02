@@ -13,10 +13,20 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Formik, FormikProps } from "formik";
 import * as Yup from "yup";
+import * as ImagePicker from 'expo-image-picker';
+import CryptoJS from 'crypto-js';
+import * as DocumentPicker from 'expo-document-picker';
+import * as firebase from 'firebase/app';
+import 'firebase/storage';
 
 // redux
 import { ApplicationState } from "../../redux";
-import { authCredentials, signUpCompanyAsync } from "../../redux/auth";
+import {
+	authCredentials, fetchPredictionsAsync, getLatLngFromAddress,
+	signUpCompanyAsync,
+	updateUserProfilePicture,
+	updateUserProfilePictureFailure, updateUserProfilePictureSuccess, saveCompanyDetails
+} from "../../redux/auth";
 
 // styles
 import { Layout } from "../../constants";
@@ -25,15 +35,44 @@ import { translate } from "../../i18n";
 import { Header } from "../../components/header";
 import { TextField } from "../../components/text-field";
 import { Button } from "../../components/button";
+import {formatPhoneNumber, formatFolioNumber} from "../../utils/formatters";
+import {notify} from "../../redux/startup";
+
+// Initialize Firebase
+const firebaseConfig = {
+	apiKey: "AIzaSyB3Dx-so_MRgX_IkamyiWo0fMRyoq_SeLA",
+	authDomain: "grapepharm.firebaseapp.com",
+	databaseURL: "https://grapepharm.firebaseio.com",
+	projectId: "grapepharm",
+	storageBucket: "grapepharm.appspot.com",
+	messagingSenderId: "273507072258",
+	appId: "1:273507072258:web:c45ad46f01d88217ed2a1b",
+	measurementId: "G-WXD6EQGN38"
+};
+
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig)
+}
 
 interface DispatchProps {
 	signUpCompanyAsync: (values: authCredentials) => void
+	updateUserProfilePicture: () => void
+	updateUserProfilePictureFailure: () => void
+	updateUserProfilePictureSuccess: () => void
+	notify: (message: string, type: string) => void
+	fetchPredictionsAsync: (searchKey: string) => void
+	getLatLngFromAddress: (description: string) => void
+	saveCompanyDetails: (values: authCredentials) => void
 }
 
 interface StateProps {
 	authCompanyName: string
 	authEmail: string
+	authPhoneNumber: string
+	authDeliveryFee: string
 	isLoading: boolean
+	predictions: Array<any>
+	locationName: string
 }
 
 interface MyFormValues {
@@ -41,6 +80,8 @@ interface MyFormValues {
 	email: string
 	password: string
 	confirmPassword: string
+	phoneNumber: string
+	deliveryFee: string
 }
 
 interface ComSignUpProps extends NavigationScreenProps {}
@@ -51,6 +92,9 @@ const schema = Yup.object().shape({
 	companyName: Yup.string()
 		.min(3, "common.fieldTooShort")
 		.required("common.fullNameError"),
+	phoneNumber: Yup.string()
+		.min(10, "common.fieldTooShort")
+		.required("common.fullNameError"),
 	email: Yup.string()
 		.email("common.emailError")
 		.required("common.fieldRequired"),
@@ -60,6 +104,8 @@ const schema = Yup.object().shape({
 	confirmPassword: Yup.string()
 		.oneOf([Yup.ref('password')], 'common.confirmPassword')
 		.required("common.fieldRequired"),
+	deliveryFee: Yup.string()
+		.required("common.fieldRequired"),
 })
 
 const ROOT: ViewStyle = {
@@ -67,7 +113,7 @@ const ROOT: ViewStyle = {
 };
 
 const SCROLL_VIEW: ViewStyle = {
-	height: '100%',
+	// height: '100%',
 	backgroundColor: colors.AuthBG
 };
 
@@ -139,36 +185,8 @@ const FIELD: ViewStyle = {
 	marginTop: 20
 }
 
-const REGISTER: TextStyle = {
-	color: colors.darkGreen,
-	fontFamily: fonts.PoppinsMedium,
-	marginLeft: 35,
-};
-
-const TICK_TEXT: TextStyle = {
-	color: colors.darkPurple,
-	fontSize: 13,
-	marginLeft: 15,
-	fontFamily: fonts.PoppinsRegular,
-};
-
-const AGE_ICON: ImageStyle = {
-	marginBottom: 5
-};
-
-const AGE_RESTRICTION_VIEW: TextStyle = {
-	marginLeft: 35,
-	marginBottom: 20,
-	width: Layout.window.width / 3,
-};
-
-const RADIO_VIEW: TextStyle = {
-	marginTop: 10,
-	flexDirection: 'row',
-};
-
 const BUTTON_VIEW: ViewStyle = {
-	marginBottom: 30
+	marginBottom: 20
 }
 
 const BOTTOM_TEXT_LOGIN: TextStyle = {
@@ -184,30 +202,58 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 	passwordInput: NativeMethodsMixinStatic | any
 	confirmPasswordInput: NativeMethodsMixinStatic | any
 	formik: NativeMethodsMixinStatic | any;
+	phoneNumberInput: NativeMethodsMixinStatic | any
+	addressInput: NativeMethodsMixinStatic | any
+	deliveryFeeInput: NativeMethodsMixinStatic | any
 
 	state={
 		pharmacy: true,
 		manufacturer: false,
+		imagesFiles: [],
+		pictures: [],
+		file: '',
+		fileName: '',
+    searchPlacesModal: false,
+		companyImages: [],
+		documentName: '',
+		pdfURL: ''
 	}
-
+	
+	async componentDidMount() {
+		if (Platform.OS === "ios") {
+			const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+			if (status !== 'granted') {
+				alert('Sorry, we need camera roll permissions to make this work!');
+			}
+		}
+	}
+	
 	submit = (values: authCredentials) => {
-		const { manufacturer } = this.state
-		const { signUpCompanyAsync } = this.props;
+		console.tron.log('Called')
+		const { navigation, notify, saveCompanyDetails } = this.props;
 		const newValues = {
 			...values,
-			companyType: manufacturer ? "manufacturer" : "pharmacy",
 			authType: 'email'
 		}
-		signUpCompanyAsync(newValues)
-	}
 
+		if(values.deliveryFee > 9) {
+			// navigation.navigate('comSignUpTwo', {
+			// 	values: newValues
+			// })
+			saveCompanyDetails(newValues)
+		} else {
+			notify('Invalid delivery price', 'error')
+		}
+	}
+	
 	public render(): React.ReactNode {
-		
+
 		const {
-			navigation, authCompanyName, authEmail, isLoading
+			navigation, authCompanyName, authEmail, isLoading, fetchPredictionsAsync, predictions, getLatLngFromAddress, locationName,
+			authDeliveryFee, authPhoneNumber
 		} = this.props
 		
-		const { pharmacy, manufacturer } = this.state
+		const { pharmacy, manufacturer, imagesFiles, fileName, searchPlacesModal, companyImages } = this.state
 		
 		return (
 			<KeyboardAvoidingView
@@ -219,15 +265,15 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 					showsVerticalScrollIndicator={false}
 					alwaysBounceHorizontal={false}
 					alwaysBounceVertical={false}
+					bounces={false}
 					style={SCROLL_VIEW}
 				>
-					
 					{
 						Platform.OS === "ios"
 							? <StatusBar barStyle={"light-content"} />
 							: <StatusBar barStyle={"dark-content"} translucent backgroundColor={colors.companyGreenTwo} />
 					}
-					
+
 					<ImageBackground
 						source={images.authBackground}
 						style={BACKGROUND_IMAGE}
@@ -282,6 +328,8 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 										email: authEmail,
 										password: "",
 										confirmPassword: "",
+										phoneNumber: authPhoneNumber,
+										deliveryFee: authDeliveryFee,
 									}}
 									validationSchema={schema}
 									onSubmit={this.submit}
@@ -345,7 +393,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 													onChangeText={handleChange("password")}
 													onBlur={handleBlur("password")}
 													autoCapitalize="none"
-													returnKeyType="done"
+													returnKeyType="next"
 													isInvalid={!isValid}
 													fieldError={errors.password}
 													forwardedRef={i => {
@@ -363,74 +411,55 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 													onChangeText={handleChange("confirmPassword")}
 													onBlur={handleBlur("confirmPassword")}
 													autoCapitalize="none"
-													returnKeyType="done"
+													returnKeyType="next"
 													isInvalid={!isValid}
 													fieldError={errors.confirmPassword}
 													forwardedRef={i => {
 														this.confirmPasswordInput = i
 													}}
 													blurOnSubmit={false}
-													onSubmitEditing={()=> {
-														Keyboard.dismiss()
-													}}
+													onSubmitEditing={() => this.phoneNumberInput.focus()}
 												/>
-											
-											
+												
+												<TextField
+													name="phoneNumber"
+													placeholderTx="comSignUp.phoneNumberPlaceHolder"
+													value={formatPhoneNumber(values.phoneNumber)}
+													onChangeText={handleChange("phoneNumber")}
+													onBlur={handleBlur("phoneNumber")}
+													autoCapitalize="none"
+													returnKeyType="next"
+													isInvalid={!isValid}
+													fieldError={errors.phoneNumber}
+													forwardedRef={i => {
+														this.phoneNumberInput = i
+													}}
+													blurOnSubmit={false}
+													onSubmitEditing={() => this.deliveryFeeInput.focus()}
+												/>
+												
+						
+												<TextField
+													name="deliveryFee"
+													placeholderTx="common.deliveryFee"
+													value={formatFolioNumber(values.deliveryFee)}
+													onChangeText={handleChange("deliveryFee")}
+													onBlur={handleBlur("deliveryFee")}
+													autoCapitalize="none"
+													returnKeyType="done"
+													isInvalid={!isValid}
+													fieldError={errors.deliveryFee}
+													forwardedRef={i => {
+														this.deliveryFeeInput = i
+													}}
+													blurOnSubmit={false}
+													onSubmitEditing={() => Keyboard.dismiss()}
+												/>
+												
 											</View>
 										</View>
 									)}
 								</Formik>
-								
-								<Text
-									style={REGISTER}
-								>
-									{translate(`comSignUp.registerAs`)}
-								</Text>
-								
-								<View
-									style={AGE_RESTRICTION_VIEW}
-								>
-									<View
-										style={RADIO_VIEW}
-									>
-										<TouchableOpacity
-											onPress={() => !pharmacy && this.setState({ pharmacy : !pharmacy, manufacturer: !manufacturer })}
-										>
-											<Image
-												source={pharmacy ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}
-												style={AGE_ICON}
-											/>
-										</TouchableOpacity>
-										
-										<Text
-											style={[TICK_TEXT, { color: pharmacy ? colors.companyGreenTwo : colors.darkPurple }]}
-										
-										>
-											{translate(`comSignUp.pharmacy`)}
-										</Text>
-									</View>
-									
-									{/*<View*/}
-									{/*	style={RADIO_VIEW}*/}
-									{/*>*/}
-									{/*	<TouchableOpacity*/}
-									{/*		onPress={() => !manufacturer && this.setState({ pharmacy : !pharmacy, manufacturer: !manufacturer })}*/}
-									{/*	>*/}
-									{/*		<Image*/}
-									{/*			source={manufacturer ? images.ageCheckBoxTrue : images.ageCheckBoxFalse}*/}
-									{/*			style={AGE_ICON}*/}
-									{/*		/>*/}
-									{/*	</TouchableOpacity>*/}
-									{/*	*/}
-									{/*	<Text*/}
-									{/*		style={[TICK_TEXT, { color: manufacturer ? colors.companyGreenTwo : colors.darkPurple }]}*/}
-									{/*	>*/}
-									{/*		{translate(`comSignUp.manufacturer`)}*/}
-									{/*	</Text>*/}
-									{/*</View>*/}
-									
-								</View>
-								
 								
 								<View
 									style={BUTTON_VIEW}
@@ -464,7 +493,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 										{
 											!isLoading && (
 												<Image
-													source={images.registerBTN}
+													source={images.continueBTN}
 												/>
 											)
 										}
@@ -475,7 +504,7 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 							</View>
 							
 							<TouchableOpacity
-								onPress={() => navigation.navigate('signIn')}
+								onPress={() => navigation.goBack()}
 								style={BOTTOM_VIEW}
 							>
 								
@@ -503,14 +532,25 @@ class ComSignUp extends React.Component<NavigationScreenProps & Props> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchProps => ({
-	signUpCompanyAsync: (values: authCredentials) => dispatch(signUpCompanyAsync(values))
+	signUpCompanyAsync: (values: authCredentials) => dispatch(signUpCompanyAsync(values)),
+	updateUserProfilePicture: () => dispatch(updateUserProfilePicture()),
+	updateUserProfilePictureFailure: () => dispatch(updateUserProfilePictureFailure()),
+	updateUserProfilePictureSuccess: () => dispatch(updateUserProfilePictureSuccess()),
+	notify: (message: string, type: string) => dispatch(notify(message, type)),
+	fetchPredictionsAsync: (searchKey: string) => dispatch(fetchPredictionsAsync(searchKey)),
+	getLatLngFromAddress: (description: string) => dispatch(getLatLngFromAddress(description)),
+	saveCompanyDetails: (values: authCredentials) => dispatch(saveCompanyDetails(values)),
 });
 
 let mapStateToProps: (state: ApplicationState) => StateProps;
 mapStateToProps = (state: ApplicationState): StateProps => ({
 	authCompanyName: state.auth.companyName,
 	authEmail: state.auth.email,
+	authPhoneNumber: state.auth.phoneNumber,
+	authDeliveryFee: state.auth.deliveryFee,
 	isLoading: state.auth.loading,
+	predictions: state.auth.predictions,
+	locationName: state.auth.locationName,
 });
 
 export const ComSignUpScreen = connect<StateProps>(

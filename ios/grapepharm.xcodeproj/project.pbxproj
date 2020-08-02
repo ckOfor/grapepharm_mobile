@@ -20,6 +20,7 @@
 		F765CEFC2483FF8F009ACDB2 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F765CEFB2483FF8F009ACDB2 /* libRNGoogleSignin.a */; };
 		F77D1C9A2464CF520028A34A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F77D1C992464CF520028A34A /* GoogleService-Info.plist */; };
 		F77D1C9C2465B3150028A34A /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F77D1C9B2465B3140028A34A /* UserNotifications.framework */; };
+		F7CF039524A9EC7F00ED0E08 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7CF039424A9EC7F00ED0E08 /* CloudKit.framework */; };
 		F7DBA220245E4BCD00035371 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */; };
 		F7DBA221245E4BCD00035371 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */; };
 		F7DBA222245E4BCD00035371 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */; };
@@ -70,6 +71,7 @@
 		F788AFA12466B53F00BDC1DE /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFirebase.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F788AFA32466B57700BDC1DE /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		F788AFAB2466BE2600BDC1DE /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFirebase.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7CF039424A9EC7F00ED0E08 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		F7DBA21B245E4BCC00035371 /* Poppins-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Light.ttf"; path = "../assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
 		F7DBA21C245E4BCD00035371 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		F7DBA21D245E4BCD00035371 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				F765CEFC2483FF8F009ACDB2 /* libRNGoogleSignin.a in Frameworks */,
 				F7F225792466CCF200BFEDDE /* libRNFirebase.a in Frameworks */,
 				F77D1C9C2465B3150028A34A /* UserNotifications.framework in Frameworks */,
+				F7CF039524A9EC7F00ED0E08 /* CloudKit.framework in Frameworks */,
 				7B0C5784998A29E517983E0C /* libPods-grapepharm.a in Frameworks */,
 				F7F2257B2466CCFD00BFEDDE /* libFirebaseMessaging.a in Frameworks */,
 			);
@@ -121,6 +124,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F7CF039424A9EC7F00ED0E08 /* CloudKit.framework */,
 				F765CEFB2483FF8F009ACDB2 /* libRNGoogleSignin.a */,
 				F70410452467665B00784681 /* libEXLocalAuthentication.a */,
 				F7F2257A2466CCFD00BFEDDE /* libFirebaseMessaging.a */,
@@ -388,7 +392,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = grapepharm/grapepharm.entitlements;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				HEADER_SEARCH_PATHS = (
@@ -492,7 +496,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = grapepharm/grapepharm.entitlements;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_TEAM = 9LTMQ2LQXZ;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

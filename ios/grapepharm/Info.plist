@@ -101,7 +101,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Give grapepharm periences permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Give grapepharm periences permission to access your photos</string>
+	<string>Give $(PRODUCT_NAME) permission to save photos</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Allow grapepharm to access your reminders</string>
 	<key>UIAppFonts</key>

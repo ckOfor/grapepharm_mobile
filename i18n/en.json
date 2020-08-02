@@ -24,7 +24,8 @@
     "confirmPassword": "Password does not match",
     "register": "Register",
     "codeLength": "Invalid code length",
-    "codePlatform": "Enter activation code"
+    "codePlatform": "Enter activation code",
+    "deliveryFee": "Enter delivery fee per kilometer e.g N 10"
   },
   "intro": {
     "screenOneHeader": "Individual",
@@ -52,7 +53,13 @@
     "company": "Company",
     "registerAs": "Register as:",
     "pharmacy": "Pharmacy",
-    "manufacturer": "Manufacturer"
+    "manufacturer": "Manufacturer",
+    "phoneNumberPlaceHolder": "Phone no",
+    "addImage": "Add image",
+    "license": "License",
+    "uploadFile": "Upload File",
+    "fileName": "{{fileName}}",
+    "addressPlaceHolder": "Address"
   },
   "signIn": {
     "fingerPrint": "Or fingerprint/faceId Login",
@@ -71,5 +78,8 @@
     "search": "Search",
     "pharmacy": "Pharmacy near you",
     "seeAll": "See All"
+  },
+  "verification": {
+    "message": "Waiting for verification"
   }
 }

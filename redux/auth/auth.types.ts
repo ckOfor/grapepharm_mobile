@@ -22,6 +22,18 @@ type SetAuthPasswordAction = {
 	payload: string
 };
 
+export const SET_PHONE_NUMBER = "SET_PHONE_NUMBER"
+type SetPhoneNumberAction = {
+	type: typeof SET_PHONE_NUMBER
+	payload: string
+};
+
+export const SET_DELIVERY_FEE = "SET_DELIVERY_FEE"
+type SetDeliveryFeeAction = {
+	type: typeof SET_DELIVERY_FEE
+	payload: string
+};
+
 export const SET_AUTH_USER_TYPE = "SET_AUTH_USER_TYPE"
 type SetAuthUserTypeAction = {
 	type: typeof SET_AUTH_USER_TYPE
@@ -151,6 +163,87 @@ type editPasswordSuccess = {
 	type: typeof EDIT_PASSWORD_SUCCESS
 }
 
+export const FETCH_PREDICTION_FROM_SERVER = "FETCH_PREDICTION_FROM_SERVER"
+type fetchPredictionsFromServer = {
+	type: typeof FETCH_PREDICTION_FROM_SERVER
+}
+
+export const FETCH_PREDICTION_FROM_SERVER_FAILURE = "FETCH_PREDICTION_FROM_SERVER_FAILURE"
+type fetchPredictionsFromServerFailure = {
+	type: typeof FETCH_PREDICTION_FROM_SERVER_FAILURE
+}
+
+export const FETCH_PREDICTION_FROM_SERVER_SUCCESS = "FETCH_PREDICTION_FROM_SERVER_SUCCESS"
+type fetchPredictionsFromServerSuccess = {
+	type: typeof FETCH_PREDICTION_FROM_SERVER_SUCCESS
+}
+
+export const UPDATE_USER_PROFILE_PICTURE= "UPDATE_USER_PROFILE_PICTURE"
+type UpdateUserProfilePicture = {
+	type: typeof  UPDATE_USER_PROFILE_PICTURE,
+}
+
+export const UPDATE_USER_PROFILE_PICTURE_FAILURE = "UPDATE_USER_PROFILE_PICTURE_FAILURE"
+type UpdateUserProfilePictureFailure = {
+	type: typeof UPDATE_USER_PROFILE_PICTURE_FAILURE,
+}
+
+export const UPDATE_USER_PROFILE_PICTURE_SUCCESS = "UPDATE_USER_PROFILE_PICTURE_SUCCESS"
+type UpdateUserProfilePictureSuccess = {
+	type: typeof UPDATE_USER_PROFILE_PICTURE_SUCCESS,
+}
+
+export const FETCH_PREDICTIONS = "FETCH_PREDICTIONS"
+type FetchPredictions = {
+	type: typeof FETCH_PREDICTIONS
+}
+
+export const FETCH_PREDICTIONS_FAILURE = "FETCH_PREDICTIONS_FAILURE"
+type FetchPredictionsFailure = {
+	type: typeof FETCH_PREDICTIONS_FAILURE
+}
+
+export const FETCH_PREDICTIONS_SUCCESS = "FETCH_PREDICTIONS_SUCCESS"
+type FetchPredictionsSuccess = {
+	type: typeof FETCH_PREDICTIONS_SUCCESS
+}
+
+export const SAVE_PREDICTIONS = "SAVE_PREDICTIONS"
+type SavePredictions= {
+	type: typeof SAVE_PREDICTIONS,
+	payload: Array<any>
+}
+
+export const CLEAR_PREDICTIONS = "CLEAR_PREDICTIONS"
+type ClearPredictions= {
+	type: typeof CLEAR_PREDICTIONS
+}
+
+
+export const SAVE_LOCATION_ADDRESS = "SAVE_LOCATION_ADDRESS"
+type SaveLocationAddress = {
+	type: typeof SAVE_LOCATION_ADDRESS
+	payload: string
+}
+
+export const SAVE_LOCATION_NAME = "SAVE_LOCATION_NAME"
+type SaveLocationName = {
+	type: typeof SAVE_LOCATION_NAME
+	payload: string
+}
+
+export const SAVE_LOCATION_DETAILS = "SAVE_LOCATION_DETAILS"
+type SaveLocationDetails = {
+	type: typeof SAVE_LOCATION_DETAILS
+	payload: Array<any>
+}
+
+export const SAVE_LOCATION_GEOMETRY = "SAVE_LOCATION_GEOMETRY"
+type SaveLocationGeometry = {
+	type: typeof SAVE_LOCATION_GEOMETRY
+	payload: Array<any>
+}
+
 export type IUser = {
 	id: number
 	fullName: string
@@ -190,6 +283,11 @@ export type authCredentials = {
 	userType?: string
 	folioNumber?: string
 	notificationId?: string
+	license?: string
+	pictures?: any
+	values?: any
+	phoneNumber?: string
+	deliveryFee?: string
 }
 
 export type forgotPasswordFields = {
@@ -210,6 +308,13 @@ export type AuthState = {
 	loading: boolean
 	folioNumber: string
 	user: IUser | []
+	predictions: Array<any>
+	locationGeometry: Array<any>
+	locationName: string
+	locationAddress: string
+	locationDetails: Array<any>
+	phoneNumber: string
+	deliveryFee: string
 }
 
 export type AuthAction =
@@ -242,3 +347,20 @@ export type AuthAction =
 	| editPassword
 	| editPasswordFailure
 	| editPasswordSuccess
+	| fetchPredictionsFromServer
+	| fetchPredictionsFromServerFailure
+	| fetchPredictionsFromServerSuccess
+	| UpdateUserProfilePicture
+	| UpdateUserProfilePictureFailure
+	| UpdateUserProfilePictureSuccess
+	| FetchPredictions
+	| FetchPredictionsFailure
+	| FetchPredictionsSuccess
+	| SavePredictions
+	| ClearPredictions
+	| SaveLocationName
+	| SaveLocationAddress
+	| SaveLocationDetails
+	| SaveLocationGeometry
+	| SetPhoneNumberAction
+	| SetDeliveryFeeAction
